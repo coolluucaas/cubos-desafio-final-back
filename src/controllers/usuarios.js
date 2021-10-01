@@ -5,11 +5,11 @@ const cadastrarUsuario = async (req, res) => {
     const { nome, email, senha } = req.body
 
     try {
-        const usuarioCheck = await knex('usuarios')
+        const emailCheck = await knex('usuarios')
             .where('email', email)
             .first()
 
-        if (usuarioCheck) {
+        if (emailCheck) {
             return res.status(400).json('O email já existe')
         }
 
@@ -57,7 +57,7 @@ const atualizarPerfil = async (req, res) => {
                     .first()
 
                 if (emailCheck) {
-                    return res.status(400).json('O email já existe')
+                    return res.status(400).json('Esse email está indisponível. Por favor, tente uma alternativa.')
                 }
             }
 
