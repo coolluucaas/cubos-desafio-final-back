@@ -10,7 +10,7 @@ const cadastrarUsuario = async (req, res) => {
             .first()
 
         if (emailCheck) {
-            return res.status(400).json('O email já existe')
+            return res.status(400).json('Email indisponível. Por favor, insira outro endereço.')
         }
 
         const senhaCriptografada = await bcrypt.hash(senha, 10)
@@ -57,7 +57,7 @@ const atualizarPerfil = async (req, res) => {
                     .first()
 
                 if (emailCheck) {
-                    return res.status(400).json('Esse email está indisponível. Por favor, tente uma alternativa.')
+                    return res.status(400).json('Email indisponível. Por favor, insira outro endereço.')
                 }
             }
 
