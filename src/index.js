@@ -11,4 +11,4 @@ app.use(express.json())
 app.use(routesUsuarios)
 app.use(routesClientes)
 
-app.listen(process.env.PORT)
+app.listen(process.env.PORT || 3000)
