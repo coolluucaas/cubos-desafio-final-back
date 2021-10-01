@@ -22,7 +22,7 @@ const logarUsuario = async (req, res) => {
             expiresIn: '8h',
         })
 
-        const { senha: _, ...dadosUsuario } = usuario
+        const { senha: senhaUsuario, ...dadosUsuario } = usuario
 
         return res.status(200).json({
             usuario: dadosUsuario,
