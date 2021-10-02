@@ -3,7 +3,7 @@ const logarUsuario = require('../controllers/loginController')
 const { cadastrarUsuario, obterPerfil, atualizarPerfil } = require('../controllers/usersController')
 const verificadorLogin = require('../middlewares/authMiddleware')
 const validation = require('../middlewares/validationMiddleware')
-const schemaAtualizarPerfil = require('../validations/atualizarPerfilValidation')
+const schemaAtualizarPerfilUsuario = require('../validations/atualizarPerfilUsuarioValidation')
 const schemaCadastrarUsuario = require('../validations/cadastrarUsuarioValidation')
 const schemaLogin = require('../validations/loginValidation')
 
@@ -15,6 +15,6 @@ routesUsuarios.post('/usuario',validation(schemaCadastrarUsuario), cadastrarUsua
 routesUsuarios.use(verificadorLogin)
 
 routesUsuarios.get('/usuario', obterPerfil)
-routesUsuarios.put('/usuario',validation(schemaAtualizarPerfil), atualizarPerfil)
+routesUsuarios.put('/usuario',validation(schemaAtualizarPerfilUsuario), atualizarPerfil)
 
 module.exports = routesUsuarios
