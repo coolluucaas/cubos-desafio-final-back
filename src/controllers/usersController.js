@@ -1,4 +1,4 @@
-const knex = require('../config/databaseConextion')
+const knex = require('../config/databaseConnection')
 const bcrypt = require('bcrypt')
 
 const cadastrarUsuario = async (req, res) => {

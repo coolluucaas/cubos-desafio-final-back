@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const knex = require('../config/databaseConextion')
+const knex = require('../config/databaseConnection')
 
 const logarUsuario = async (req, res) => {
     const { email, senha } = req.body

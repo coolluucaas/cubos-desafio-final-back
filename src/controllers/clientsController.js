@@ -1,4 +1,4 @@
-const knex = require('../config/databaseConextion')
+const knex = require('../config/databaseConnection')
 
 const cadastrarClientes = async (req, res) => {
     const { email, ...dadosCliente } = req.body
