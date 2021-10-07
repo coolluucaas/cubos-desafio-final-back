@@ -65,7 +65,7 @@ const listarClientes = async (req, res) => {
             'email', 
             'telefone',
             knex.raw('sum(valor) as cobrancas_feitas'),
-            knex.raw('sum(valor_pago) as conbrancas_recebidas'),
+            knex.raw('sum(valor_pago) as cobrancas_recebidas'),
             knex.raw(`
             (
               CASE MIN(status)
