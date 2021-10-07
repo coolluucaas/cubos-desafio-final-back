@@ -47,13 +47,13 @@ const listarClientes = async (req, res) => {
                 'd.valor',
                 knex.raw(`(
                     CASE
-                    WHEN d.data_pagamento IS NOT NULL THEN d.valor
+                    WHEN d.esta_pago IS TRUE THEN d.valor
                     ELSE 0
                     END
                    ) as valor_pago`),
                 knex.raw(`( 
                     CASE 
-                    WHEN d.data_pagamento IS NULL AND d.data_vencimento < NOW() THEN 0
+                    WHEN d.esta_pago IS FALSE AND d.data_vencimento < NOW() THEN 0
                     ELSE 1
                     END
                     ) as status`),
@@ -75,6 +75,7 @@ const listarClientes = async (req, res) => {
             ) as status`
         )]).from('tabela_de_inadimplencia')
         .groupBy(['id', 'nome', 'telefone', 'email'])
+        .orderBy('id')
 
       
         return res.status(200).json(clientes)
