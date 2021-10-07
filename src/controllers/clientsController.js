@@ -58,7 +58,7 @@ const listarClientes = async (req, res) => {
                     END
                     ) as status`),
             ]).from('clientes as c')
-            .leftJoin('dividas as d','c.id', '=', 'd.cliente_id')
+            .leftJoin('cobrancas as d','c.id', '=', 'd.cliente_id')
         ).select([
             'id', 
             'nome', 

@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS clientes;
 DROP TABLE IF EXISTS usuarios;
-DROP TABLE IF EXISTS dividas;
+DROP TABLE IF EXISTS cobrancas;
 
 CREATE TABLE usuarios (
     id serial primary key ,
@@ -27,7 +27,7 @@ CREATE TABLE usuarios (
     foreign key (usuario_id) references usuarios (id)
    );
 
- CREATE TABLE dividas (
+ CREATE TABLE cobrancas (
     id serial primary key,    
     cliente_id integer not null,  
     data_vencimento date not null,    
