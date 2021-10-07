@@ -12,10 +12,10 @@ CREATE TABLE usuarios (
 );
 
   INSERT INTO usuarios 
-    ( nome, email, senha) 
+    ( nome, email, senha, cpf, telefone) 
 	VALUES 
-   ( 'Maria','culinariamaterna@email.com', 'sucoAbacate'),
-   ( 'Lucas Prates', 'brinquedoscriativos@email.com','coolToys');
+   ( 'Maria','culinariamaterna@email.com', 'sucoAbacate', '001.234.567-89', '(71)12345-67890' ),
+   ( 'Lucas Prates', 'brinquedoscriativos@email.com','coolToys','987.654.321-00', '(71)09876-54321' );
   
  CREATE TABLE clientes (
     id serial primary key ,
@@ -34,10 +34,10 @@ CREATE TABLE usuarios (
  );
 
    INSERT INTO clientes 
-    ( usuario_id, nome, email ) 
+    ( usuario_id, nome, email, cpf, telefone, cep, logradouro, complemento, referencia, bairro, cidade) 
 	VALUES 
-   ( 1,'Diego Digiandomenico','_dabriza@email.com'),
-   ( 2,'Gabriele Landim', 'tecnologiacritica@email.com');
+   ( 1,'Diego Digiandomenico','_dabriza@email.com', '001.234.567-89','(71)12345-67890', '12345-678', 'Diego-logradouro', 'Diego-complemento','Diego-pontoDeReferencia', 'Diego-bairro','Diego-cidade'),
+   ( 2,'Gabriele Landim', 'tecnologiacritica@email.com', '001.234.567-89', '(71)09876-54321', '87654-321','Gabriele-logradouro', 'Gabriele-complemento','Gabriele-pontoDeReferencia', 'Gabriele-bairro','Gabriele-cidade');
 
  CREATE TABLE cobrancas (
     id serial primary key,    
