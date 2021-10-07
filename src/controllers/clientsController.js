@@ -41,7 +41,7 @@ const listarClientes = async (req, res) => {
             'tabela_de_inadimplencia',
             knex.select([
                 'c.id',
-                'nome',
+                'c.nome',
                 'email',
                 'telefone',
                 'd.valor',
