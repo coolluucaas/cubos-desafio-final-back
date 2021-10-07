@@ -53,8 +53,8 @@ CREATE TABLE usuarios (
   INSERT INTO cobrancas 
     ( cliente_id, nome, descricao, data_vencimento, valor, esta_pago) 
 	VALUES 
-    ( 1,'Diego Digiandomenico' 'aaaaa', '2022-06-01', 1000, TRUE ),
-    ( 1,'Diego Digiandomenico' 'bbbbb', '2022-06-01', 2000, TRUE ),
-    ( 1,'Diego Digiandomenico' 'ccccc', '2021-09-01', 3000, FALSE ),
+    ( 1,'Diego Digiandomenico', 'aaaaa', '2022-06-01', 1000, TRUE ),
+    ( 1,'Diego Digiandomenico', 'bbbbb', '2022-06-01', 2000, TRUE ),
+    ( 1,'Diego Digiandomenico', 'ccccc', '2021-09-01', 3000, FALSE ),
     ( 2,'Gabriele Landim', 'ddddd', '2022-06-01', 4000, FALSE ),
     ( 2,'Gabriele Landim', 'eeeee', '2021-11-01', 5000, FALSE );
