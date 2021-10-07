@@ -29,7 +29,8 @@ CREATE TABLE usuarios (
 
  CREATE TABLE cobrancas (
     id serial primary key,    
-    cliente_id integer not null,  
+    cliente_id integer not null,
+    descricao text,
     data_vencimento date not null,    
   	valor integer not null,
     esta_pago boolean default false,  
