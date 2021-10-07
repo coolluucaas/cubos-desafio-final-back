@@ -1,5 +1,8 @@
 const express = require('express')
-const cadastrarClientes = require('../controllers/clientsController')
+const {
+    cadastrarClientes,
+    listarClientes,
+} = require('../controllers/clientsController')
 const validation = require('../middlewares/validationMiddleware')
 const schemaCadastrarCliente = require('../validations/cadastrarClienteValidation')
 
@@ -10,5 +13,6 @@ routesClientes.post(
     validation(schemaCadastrarCliente),
     cadastrarClientes
 )
+routesClientes.get('/cliente', listarClientes)
 
 module.exports = routesClientes
