@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const knex = require('../config/databaseConextion')
+const knex = require('../config/databaseConnection')
 
 const verificadorLogin = async (req, res, next) => {
     const { authorization } = req.headers
@@ -16,7 +16,7 @@ const verificadorLogin = async (req, res, next) => {
         const usuarioCheck = await knex('usuarios').where('id', id).first()
 
         if (!usuarioCheck) {
-            return res.status(404).json('Usuario não encontrado')
+            return res.status(404).json('Usuario não encontrado.')
         }
 
         const { senha, ...usuario } = usuarioCheck
