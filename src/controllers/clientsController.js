@@ -114,8 +114,8 @@ const listarClientes = async (req, res) => {
                 knex.raw(`( 
                 CASE 
                 WHEN d.esta_pago IS TRUE THEN 'PAGO'
-                WHEN d.esta_pago IS FALSE AND d.data_vencimento< NOW() THEN 'PENDENTE'  
-                ELSE 'VENCIDO'
+                WHEN d.esta_pago IS FALSE AND d.data_vencimento<= NOW() THEN 'PENDENTE'
+                WHEN d.esta_pago IS FALSE AND d.data_vencimento > NOW() THEN 'VENCIDO'                
                 END
                 ) as status`),
             ])
@@ -131,11 +131,6 @@ const listarClientes = async (req, res) => {
                 }
             }
         }
-
-        // let respostaObj= {}
-
-        // respostaObj.clientes = clientes;
-        // respostaObj.cobrancas = cobrancas;
 
         return res.status(200).json(clientes)
     } catch (error) {
