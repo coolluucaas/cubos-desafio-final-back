@@ -125,9 +125,9 @@ const listarClientes = async (req, res) => {
         for (const cliente of clientes) {
             cliente.cobrancas = []
             for (const cobranca of cobrancas) {
-                const { id_cliente, ...dadosCobrança } = cobranca
+                const { id_cliente, ...dadosCobranca } = cobranca
                 if (cliente.id_cliente === cobranca.id_cliente) {
-                    cliente.cobrancas.push(dadosCobrança)
+                    cliente.cobrancas.push(dadosCobranca)
                 }
             }
         }
