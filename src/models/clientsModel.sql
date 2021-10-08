@@ -1,7 +1,7 @@
 CREATE TABLE clientes (
     id serial primary key ,
-    usuario_id integer not null,
-    nome text not null,  
+    id_usuario integer not null,
+    nome_cliente text not null,  
     email text not null,    
   	cpf varchar(14),
     telefone varchar(15),
@@ -11,5 +11,5 @@ CREATE TABLE clientes (
     referencia text,
   	bairro text,
    	cidade text,   	
-   foreign key (usuario_id) references usuarios (id)
+   foreign key (id_usuario) references usuarios (id)
 );

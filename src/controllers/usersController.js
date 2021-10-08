@@ -2,11 +2,11 @@ const knex = require('../config/databaseConnection')
 const bcrypt = require('bcrypt')
 
 const cadastrarUsuario = async (req, res) => {
-    const { nome, email, senha } = req.body
+    const { nome_usuario, email_usuario, senha } = req.body
 
     try {
         const emailCheck = await knex('usuarios')
-            .where('email', email)
+            .where('email_usuario', email_usuario)
             .first()
 
         if (emailCheck) {
@@ -15,7 +15,7 @@ const cadastrarUsuario = async (req, res) => {
 
         const senhaCriptografada = await bcrypt.hash(senha, 10)
 
-        const usuarioObj = { nome, email, senha: senhaCriptografada }
+        const usuarioObj = { nome_usuario, email_usuario, senha: senhaCriptografada }
 
         const usuario = await knex('usuarios').insert(usuarioObj)
 
@@ -34,10 +34,10 @@ const obterPerfil = async (req, res) => {
 }
 
 const atualizarPerfil = async (req, res) => {
-    const { nome, email, senha, cpf, telefone } = req.body
+    const { nome_usuario, email_usuario, senha, cpf_usuario, telefone_usuario } = req.body
     const { usuario } = req
 
-    if (!nome && !email && !senha && !cpf && !telefone) {
+    if (!nome_usuario && !email_usuario && !senha && !cpf_usuario && !telefone_usuario) {
         return res
             .status(404)
             .json('É obrigatório informar ao menos um campo para atualização')
@@ -46,14 +46,14 @@ const atualizarPerfil = async (req, res) => {
     try {
         const usuarioObj = {}
 
-        if (nome) {
-            usuarioObj.nome = nome
+        if (nome_usuario) {
+            usuarioObj.nome_usuario = nome_usuario
         }
 
-        if (email) {
-            if (email !== req.usuario.email) {
+        if (email_usuario) {
+            if (email_usuario !== req.usuario.email_usuario) {
                 emailCheck = await knex('usuarios')
-                    .where('email', email)
+                    .where('email_usuario', email_usuario)
                     .first()
 
                 if (emailCheck) {
@@ -61,24 +61,24 @@ const atualizarPerfil = async (req, res) => {
                 }
             }
 
-            usuarioObj.email = email
+            usuarioObj.email_usuario = email_usuario
         }
 
         if (senha) {
             usuarioObj.senha = await bcrypt.hash(senha, 10)
         }
 
-        if (cpf) {
-            usuarioObj.cpf = cpf
+        if (cpf_usuario) {
+            usuarioObj.cpf_usuario = cpf_usuario
         }
 
-        if (telefone) {
-            usuarioObj.telefone = telefone
-        }
+        if (telefone_usuario) {
+            usuarioObj.telefone_usuario = telefone_usuario
+        }        
 
         const usuarioAtualizado = await knex('usuarios')
             .update(usuarioObj)
-            .where('id', usuario.id)
+            .where('id_usuario', usuario.id_usuario)
 
         if (!usuarioAtualizado) {
             return res
