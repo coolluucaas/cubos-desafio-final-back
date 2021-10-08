@@ -1,10 +1,9 @@
 const knex = require('../config/databaseConnection')
+const { from } = require('../validations/cadastrarUsuarioValidation')
 
 const cadastrarClientes = async (req, res) => {
     const { email_cliente, ...dadosCliente } = req.body
     const { id_usuario } = req.usuario
-
-    
 
     try {
         const clienteCheck = await knex('clientes')
@@ -44,10 +43,7 @@ const listarClientes = async (req, res) => {
                 'tabela_de_inadimplencia',
                 knex
                     .select([
-                        'c.id_cliente',
-                        'c.nome_cliente',
-                        'c.email_cliente',
-                        'c.telefone_cliente',
+                        'c.*',
                         'd.valor',
                         knex.raw(`(
                     CASE
@@ -63,13 +59,25 @@ const listarClientes = async (req, res) => {
                     ) as status`),
                     ])
                     .from('clientes as c')
-                    .leftJoin('cobrancas as d', 'c.id_cliente', '=', 'd.id_cliente')
+                    .leftJoin(
+                        'cobrancas as d',
+                        'c.id_cliente',
+                        '=',
+                        'd.id_cliente'
+                    )
             )
             .select([
                 'id_cliente',
                 'nome_cliente',
                 'email_cliente',
                 'telefone_cliente',
+                'cpf_cliente',
+                'cep',
+                'logradouro',
+                'complemento',
+                'referencia',
+                'bairro',
+                'cidade',
                 knex.raw('sum(valor) as cobrancas_feitas'),
                 knex.raw('sum(valor_pago) as cobrancas_recebidas'),
                 knex.raw(`
@@ -86,8 +94,48 @@ const listarClientes = async (req, res) => {
                 'nome_cliente',
                 'email_cliente',
                 'telefone_cliente',
+                'cpf_cliente',
+                'cep',
+                'logradouro',
+                'complemento',
+                'referencia',
+                'bairro',
+                'cidade',
             ])
             .orderBy('id_cliente')
+
+        const cobrancas = await knex
+            .select([
+                'c.id_cliente',
+                'd.id_cobranca',
+                'd.descricao',
+                'd.data_vencimento',
+                'd.valor',
+                knex.raw(`( 
+                CASE 
+                WHEN d.esta_pago IS TRUE THEN 'PAGO'
+                WHEN d.esta_pago IS FALSE AND d.data_vencimento< NOW() THEN 'PENDENTE'  
+                ELSE 'VENCIDO'
+                END
+                ) as status`),
+            ])
+            .from('clientes as c')
+            .leftJoin('cobrancas as d', 'c.id_cliente', '=', 'd.id_cliente')
+
+        for (const cliente of clientes) {
+            cliente.cobrancas = []
+            for (const cobranca of cobrancas) {
+                const { id_cliente, ...dadosCobrança } = cobranca
+                if (cliente.id_cliente === cobranca.id_cliente) {
+                    cliente.cobrancas.push(dadosCobrança)
+                }
+            }
+        }
+
+        // let respostaObj= {}
+
+        // respostaObj.clientes = clientes;
+        // respostaObj.cobrancas = cobrancas;
 
         return res.status(200).json(clientes)
     } catch (error) {
