@@ -1,12 +1,12 @@
 const knex = require('../config/databaseConnection')
 
 const cadastrarClientes = async (req, res) => {
-    const { email, ...dadosCliente } = req.body
+    const { email_cliente, ...dadosCliente } = req.body
     const { id: id_usuario } = req.usuario
 
     try {
         const clienteCheck = await knex('clientes')
-            .where('email', email)
+            .where('email_cliente', email_cliente)
             .first()
 
         if (clienteCheck) {
@@ -19,7 +19,7 @@ const cadastrarClientes = async (req, res) => {
 
         const clienteObj = {
             id_usuario,
-            email,
+            email_cliente,
             ...dadosCliente,
         }
 
@@ -40,9 +40,9 @@ const listarClientes = async (req, res) => {
         const clientes = await knex.with(
             'tabela_de_inadimplencia',
             knex.select([
-                'c.id',
-                'c.nome',
-                'email',
+                'c.id_cliente',
+                'c.nome_cliente',
+                'email_cliente',
                 'telefone',
                 'd.valor',
                 knex.raw(`(

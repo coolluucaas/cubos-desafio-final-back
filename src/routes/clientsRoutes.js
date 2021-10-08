@@ -13,6 +13,6 @@ routesClientes.post(
     validation(schemaCadastrarCliente),
     cadastrarClientes
 )
-routesClientes.get('/cliente', listarClientes)
+routesClientes.get('/clientes', listarClientes)
 
 module.exports = routesClientes

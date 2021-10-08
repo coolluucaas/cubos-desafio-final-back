@@ -11,17 +11,17 @@ const verificadorLogin = async (req, res, next) => {
     try {
         const token = authorization.replace('Bearer ', '').trim()
 
-        const { id } = jwt.verify(token, process.env.JWT_SENHA)
+        const { id_usuario } = jwt.verify(token, process.env.JWT_SENHA)        
 
-        const usuarioCheck = await knex('usuarios').where('id', id).first()
+        const usuarioCheck = await knex('usuarios').where('id_usuario', id_usuario).first()
 
         if (!usuarioCheck) {
             return res.status(404).json('Usuario não encontrado.')
         }
 
-        const { senha, ...usuario } = usuarioCheck
+        const { senha, ...dadosUsuario } = usuarioCheck
 
-        req.usuario = usuario
+        req.usuario = dadosUsuario        
 
         next()
     } catch (error) {
