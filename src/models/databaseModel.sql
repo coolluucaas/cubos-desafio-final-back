@@ -19,7 +19,7 @@ CREATE TABLE usuarios (
   
  CREATE TABLE clientes (
     id serial primary key ,
-    usuario_id integer not null,
+    id_usuario integer not null,
     nome text not null,  
     email text not null unique,   
   	cpf varchar(14),
@@ -30,11 +30,11 @@ CREATE TABLE usuarios (
     referencia text,
   	bairro text,
    	cidade text,   	
-    foreign key (usuario_id) references usuarios (id)
+    foreign key (id_usuario) references usuarios (id)
  );
 
    INSERT INTO clientes 
-    ( usuario_id, nome, email, cpf, telefone, cep, logradouro, complemento, referencia, bairro, cidade) 
+    ( id_usuario, nome, email, cpf, telefone, cep, logradouro, complemento, referencia, bairro, cidade) 
 	VALUES 
    ( 1,'Diego Digiandomenico','_dabriza@email.com', '001.234.567-89','(71)12345-67890', '12345-678', 'Diego-logradouro', 'Diego-complemento','Diego-pontoDeReferencia', 'Diego-bairro','Diego-cidade'),
    ( 2,'Gabriele Landim', 'tecnologiacritica@email.com', '001.234.567-89', '(71)09876-54321', '87654-321','Gabriele-logradouro', 'Gabriele-complemento','Gabriele-pontoDeReferencia', 'Gabriele-bairro','Gabriele-cidade');

@@ -2,7 +2,7 @@ const knex = require('../config/databaseConnection')
 
 const cadastrarClientes = async (req, res) => {
     const { email, ...dadosCliente } = req.body
-    const { id: usuario_id } = req.usuario
+    const { id: id_usuario } = req.usuario
 
     try {
         const clienteCheck = await knex('clientes')
@@ -18,7 +18,7 @@ const cadastrarClientes = async (req, res) => {
         }
 
         const clienteObj = {
-            usuario_id,
+            id_usuario,
             email,
             ...dadosCliente,
         }
