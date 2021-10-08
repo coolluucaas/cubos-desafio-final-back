@@ -3,10 +3,10 @@ const logarUsuario = require('../controllers/loginController')
 const { cadastrarUsuario, obterPerfil, editarPerfilUsuario } = require('../controllers/usersController')
 const verificadorLogin = require('../middlewares/authMiddleware')
 const validation = require('../middlewares/validationMiddleware')
-const schemaeditarPerfilUsuarioUsuario = require('../validations/editarPerfilUsuarioUsuarioValidation')
-const schemaCadastrarUsuario = require('../validations/cadastrarUsuarioValidation')
 const schemaLogin = require('../validations/loginValidation')
-const schemaEditarPerfilUsuario = require('../validations/atualizarPerfilUsuarioValidation')
+const schemaCadastrarUsuario = require('../validations/cadastrarUsuarioValidation')
+const schemaEditarPerfilUsuario = require('../validations/editarPerfilUsuarioValidation')
+
 
 const routesUsuarios = express()
 
