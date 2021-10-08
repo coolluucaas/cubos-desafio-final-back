@@ -4,7 +4,7 @@ const cadastrarClientes = async (req, res) => {
     const { email_cliente, ...dadosCliente } = req.body
     const { id_usuario } = req.usuario
 
-    console.log(id_usuario)
+    
 
     try {
         const clienteCheck = await knex('clientes')
