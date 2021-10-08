@@ -33,8 +33,8 @@ const obterPerfil = async (req, res) => {
     return res.status(200).json(req.usuario)
 }
 
-const atualizarPerfil = async (req, res) => {
-    const { nome_usuario, email_usuario, senha, cpf_usuario, telefone_usuario } = req.body
+const editarPerfilUsuario = async (req, res) => {
+    const { nome, email, senha, cpf, telefone } = req.body
     const { usuario } = req
 
     if (!nome_usuario && !email_usuario && !senha && !cpf_usuario && !telefone_usuario) {
@@ -95,5 +95,5 @@ const atualizarPerfil = async (req, res) => {
 module.exports = {
     cadastrarUsuario,
     obterPerfil,
-    atualizarPerfil,
+    editarPerfilUsuario,
 }
