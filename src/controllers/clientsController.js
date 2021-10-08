@@ -138,7 +138,12 @@ const listarClientes = async (req, res) => {
     }
 }
 
+const editarPerfilCliente = async (req, res) => {
+    return res.json('() [] {}')
+}
+
 module.exports = {
     cadastrarClientes,
     listarClientes,
+    editarPerfilCliente
 }
