@@ -33,7 +33,7 @@ const obterPerfil = async (req, res) => {
     return res.status(200).json(req.usuario)
 }
 
-const atualizarPerfil = async (req, res) => {
+const editarPerfilUsuario = async (req, res) => {
     const { nome, email, senha, cpf, telefone } = req.body
     const { usuario } = req
 
@@ -95,5 +95,5 @@ const atualizarPerfil = async (req, res) => {
 module.exports = {
     cadastrarUsuario,
     obterPerfil,
-    atualizarPerfil,
+    editarPerfilUsuario,
 }
