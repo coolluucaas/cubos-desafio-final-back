@@ -74,9 +74,7 @@ const atualizarPerfil = async (req, res) => {
 
         if (telefone_usuario) {
             usuarioObj.telefone_usuario = telefone_usuario
-        } 
-        
-        console.log(usuarioObj)
+        }        
 
         const usuarioAtualizado = await knex('usuarios')
             .update(usuarioObj)
