@@ -5,14 +5,14 @@ const {
     editarPerfilCliente,
 } = require('../controllers/clientsController')
 const validation = require('../middlewares/validationMiddleware')
-
+const schemaCadastrarCliente = require('../validations/cadastrarClienteValidation')
 const schemaEditarPerfilCliente = require('../validations/editarPerfilClienteValidation')
 
 const routesClientes = express()
 
 routesClientes.post(
     '/cliente',
-    validation(schemaEditarPerfilUsuario),
+    validation(schemaCadastrarCliente),
     cadastrarClientes
 )
 routesClientes.get('/clientes', listarClientes)
