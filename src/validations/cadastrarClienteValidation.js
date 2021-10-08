@@ -5,10 +5,10 @@ const schemaCadastrarCliente = yup.object().shape({
     email_cliente: yup.string().required(),
     cpf_cliente: yup.string().min(14).max(14).required(),
     telefone_cliente: yup.string().min(15).max(15).required(),   
-    cep_cliente: yup.string(),
+    cep: yup.string(),
     logradouro: yup.string(),
     complemento: yup.string(),
-    pontoDeReferencia: yup.string(),
+    referencia: yup.string(),
     bairro: yup.string(),
     cidade: yup.string(),
 })
