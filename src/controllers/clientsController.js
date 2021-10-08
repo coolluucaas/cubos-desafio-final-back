@@ -106,26 +106,25 @@ const listarClientes = async (req, res) => {
 
         const cobrancas = await knex
             .select([
-                'c.id_cliente',
-                'd.id_cobranca',
-                'd.descricao',
-                'd.data_vencimento',
-                'd.valor',
+                '*',
                 knex.raw(`( 
                 CASE 
-                WHEN d.esta_pago IS TRUE THEN 'PAGO'
-                WHEN d.esta_pago IS FALSE AND d.data_vencimento<= NOW() THEN 'PENDENTE'
-                WHEN d.esta_pago IS FALSE AND d.data_vencimento > NOW() THEN 'VENCIDO'                
+                WHEN esta_pago IS TRUE THEN 'PAGO'
+                WHEN esta_pago IS FALSE AND data_vencimento<= NOW() THEN 'PENDENTE'
+                WHEN esta_pago IS FALSE AND data_vencimento > NOW() THEN 'VENCIDO'                
                 END
                 ) as status`),
             ])
-            .from('clientes as c')
-            .leftJoin('cobrancas as d', 'c.id_cliente', '=', 'd.id_cliente')
+            .from('cobrancas')
+           
+
+            console.log(cobrancas)
 
         for (const cliente of clientes) {
             cliente.cobrancas = []
             for (const cobranca of cobrancas) {
                 const { id_cliente, ...dadosCobranca } = cobranca
+
                 if (cliente.id_cliente === cobranca.id_cliente) {
                     cliente.cobrancas.push(dadosCobranca)
                 }
