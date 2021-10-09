@@ -1,10 +1,11 @@
-CREATE TABLE cobrancas (
-    id serial primary key,    
-    cliente_id integer not null,
-    nome text, 
+ CREATE TABLE cobrancas (
+    id_cobranca serial primary key,    
+    id_cliente integer not null,
+    nome_cliente text, 
     descricao text,
-    data_vencimento date not null,    
   	valor integer not null,
+    data_vencimento date not null,    
     esta_pago boolean default false,  
-    foreign key (cliente_id) references clientes (id)
-   );
+    foreign key (id_cliente) references clientes (id_cliente),
+    foreign key (nome_cliente) references clientes (nome_cliente)
+   );   
