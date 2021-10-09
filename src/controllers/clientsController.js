@@ -15,7 +15,7 @@ const cadastrarClientes = async (req, res) => {
                 )
         }
 
-        if (!insertClient(id_usuario, email_cliente, dadosCliente)) {
+        if (!(await insertClient(id_usuario, email_cliente, dadosCliente))) {
             return res.status(400).json('O cliente não foi cadastrado.')
         }
 
@@ -28,7 +28,6 @@ const cadastrarClientes = async (req, res) => {
 const listarClientes = async (req, res) => {
     try {
         const clientes = await listClients()
-
         const cobrancas = await listDebts()
 
         for (const cliente of clientes) {
