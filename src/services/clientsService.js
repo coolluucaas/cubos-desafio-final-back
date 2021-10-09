@@ -86,8 +86,15 @@ const listClients = async () => {
 
 }
 
+const findClient = async (nome_cliente) => {
+    return knex('clientes').select('id_cliente')
+    .where('nome_cliente', nome_cliente)
+    .first()
+}
+
 module.exports = {
     checkClient,
     insertClient,
-    listClients
+    listClients,
+    findClient
 }
