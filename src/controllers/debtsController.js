@@ -1,4 +1,6 @@
 const knex = require('../config/databaseConnection')
+const { findClient } = require('../services/clientsService')
+const { insertDebt } = require('../services/debtsService')
 
 const listarCobrancas = async (req, res) => {
     try {
@@ -25,16 +27,21 @@ const listarCobrancas = async (req, res) => {
 }
 
 const cadastrarCobranca = async (req, res) => {
-    const cobrancaObj = req.body
+    const { nome_cliente, ...dadosCliente } = req.body
+    let cobrancaObj = {}
 
-    try {        
-        const cobranca = await knex('cobrancas').insert(cobrancaObj)
+    try {
+        const { id_cliente } = await findClient(nome_cliente)
 
-        if (!cobranca) {
-            return res.status(400).json('A cobranca não foi cadastrada.')
+        if (!id_cliente) {
+            return res.status(400).json('Cliente não cadastrado.')
         }
 
-        return res.status(200).json('A cobranca foi cadastrada com sucesso.')
+        if (!(await insertDebt(nome_cliente, id_cliente, dadosCliente))) {
+            return res.status(400).json('Cobranca não cadastrada.')
+        }
+
+        return res.status(200).json('Cobranca cadastrada com sucesso.')
     } catch (error) {
         return res.status(400).json(error.message)
     }
@@ -42,5 +49,5 @@ const cadastrarCobranca = async (req, res) => {
 
 module.exports = {
     listarCobrancas,
-    cadastrarCobranca
+    cadastrarCobranca,
 }
