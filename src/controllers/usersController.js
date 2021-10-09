@@ -34,7 +34,7 @@ const obterPerfil = async (req, res) => {
 }
 
 const editarPerfilUsuario = async (req, res) => {
-    const { nome, email, senha, cpf, telefone } = req.body
+    const { nome_usuario, email_usuario, senha, cpf_usuario, telefone_usuario } = req.body
     const { usuario } = req
 
     if (!nome_usuario && !email_usuario && !senha && !cpf_usuario && !telefone_usuario) {
