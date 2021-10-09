@@ -15,6 +15,20 @@ const listDebts = async () => {
     .from('cobrancas') 
 }
 
+
+const insertDebt = async (nome_cliente, id_cliente, dadosCliente) => {
+    cobrancaObj = {
+            nome_cliente,
+            id_cliente,
+            ...dadosCliente,
+        }
+
+    console.log(cobrancaObj)
+
+    return knex('cobrancas').insert(cobrancaObj)
+}
+
 module.exports = {
-    listDebts
+    listDebts,
+    insertDebt
 }
