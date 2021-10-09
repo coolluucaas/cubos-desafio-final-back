@@ -1,16 +1,12 @@
 const knex = require('../config/databaseConnection')
-const { from } = require('../validations/cadastrarUsuarioValidation')
+const { checkClient, insertClient } = require('../services/clientsService')
 
 const cadastrarClientes = async (req, res) => {
     const { email_cliente, ...dadosCliente } = req.body
     const { id_usuario } = req.usuario
 
     try {
-        const clienteCheck = await knex('clientes')
-            .where('email_cliente', email_cliente)
-            .first()
-
-        if (clienteCheck) {
+        if (await checkClient(email_cliente)) {
             return res
                 .status(400)
                 .json(
@@ -18,15 +14,7 @@ const cadastrarClientes = async (req, res) => {
                 )
         }
 
-        const clienteObj = {
-            id_usuario,
-            email_cliente,
-            ...dadosCliente,
-        }
-
-        const cliente = await knex('clientes').insert(clienteObj)
-
-        if (!cliente) {
+        if (!insertClient(id_usuario, email_cliente, dadosCliente)) {
             return res.status(400).json('O cliente não foi cadastrado.')
         }
 
@@ -116,9 +104,6 @@ const listarClientes = async (req, res) => {
                 ) as status`),
             ])
             .from('cobrancas')
-           
-
-            console.log(cobrancas)
 
         for (const cliente of clientes) {
             cliente.cobrancas = []
@@ -144,5 +129,5 @@ const editarPerfilCliente = async (req, res) => {
 module.exports = {
     cadastrarClientes,
     listarClientes,
-    editarPerfilCliente
+    editarPerfilCliente,
 }
