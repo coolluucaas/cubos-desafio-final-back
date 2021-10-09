@@ -1,5 +1,6 @@
 const knex = require('../config/databaseConnection')
 const bcrypt = require('bcrypt')
+const { updateUser } = require('../services/usersService')
 
 const cadastrarUsuario = async (req, res) => {
     const { nome_usuario, email_usuario, senha } = req.body
@@ -10,12 +11,18 @@ const cadastrarUsuario = async (req, res) => {
             .first()
 
         if (emailCheck) {
-            return res.status(400).json('Email indisponível. Por favor, insira outro endereço.')
+            return res
+                .status(400)
+                .json('Email indisponível. Por favor, insira outro endereço.')
         }
 
         const senhaCriptografada = await bcrypt.hash(senha, 10)
 
-        const usuarioObj = { nome_usuario, email_usuario, senha: senhaCriptografada }
+        const usuarioObj = {
+            nome_usuario,
+            email_usuario,
+            senha: senhaCriptografada,
+        }
 
         const usuario = await knex('usuarios').insert(usuarioObj)
 
@@ -34,10 +41,22 @@ const obterPerfil = async (req, res) => {
 }
 
 const editarPerfilUsuario = async (req, res) => {
-    const { nome_usuario, email_usuario, senha, cpf_usuario, telefone_usuario } = req.body
-    const { usuario } = req
+    const {
+        nome_usuario,
+        email_usuario,
+        senha,
+        cpf_usuario,
+        telefone_usuario,
+    } = req.body
+    const { usuario : {id_usuario} } = req   
 
-    if (!nome_usuario && !email_usuario && !senha && !cpf_usuario && !telefone_usuario) {
+    if (
+        !nome_usuario &&
+        !email_usuario &&
+        !senha &&
+        !cpf_usuario &&
+        !telefone_usuario
+    ) {
         return res
             .status(404)
             .json('É obrigatório informar ao menos um campo para atualização')
@@ -52,12 +71,12 @@ const editarPerfilUsuario = async (req, res) => {
 
         if (email_usuario) {
             if (email_usuario !== req.usuario.email_usuario) {
-                emailCheck = await knex('usuarios')
-                    .where('email_usuario', email_usuario)
-                    .first()
-
-                if (emailCheck) {
-                    return res.status(400).json('Email indisponível. Por favor, insira outro endereço.')
+                if (await checkUser(email_usuario)) {
+                    return res
+                        .status(400)
+                        .json(
+                            'Email indisponível. Por favor, insira outro endereço.'
+                        )
                 }
             }
 
@@ -74,13 +93,9 @@ const editarPerfilUsuario = async (req, res) => {
 
         if (telefone_usuario) {
             usuarioObj.telefone_usuario = telefone_usuario
-        }        
+        }
 
-        const usuarioAtualizado = await knex('usuarios')
-            .update(usuarioObj)
-            .where('id_usuario', usuario.id_usuario)
-
-        if (!usuarioAtualizado) {
+        if (!(await updateUser(usuarioObj, id_usuario))) {
             return res
                 .status(400)
                 .json('O perfil do usuario não foi atualizado')
