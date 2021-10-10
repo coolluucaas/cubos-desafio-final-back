@@ -3,7 +3,7 @@ const {
     updateUser,
     checkEmailUser,
     insertUser,
-    handleUserInputs,
+    handleUserUpdateInputs,
 } = require('../services/usersService')
 
 const cadastrarUsuario = async (req, res) => {
@@ -48,7 +48,7 @@ const editarPerfilUsuario = async (req, res) => {
     const usuarioObj = {}
 
     try {
-        await handleUserInputs(
+        await handleUserUpdateInputs(
             nome_usuario,
             email_usuario,
             email_cadastrado,

@@ -19,7 +19,7 @@ const updateUser = async (usuarioObj, id_usuario) => {
     return knex('usuarios').update(usuarioObj).where('id_usuario', id_usuario)
 }
 
-const handleUserInputs = async (
+const handleUserUpdateInputs = async (
     nome_usuario,
     email_usuario,
     email_cadastrado,
@@ -75,5 +75,5 @@ module.exports = {
     checkEmailUser,
     insertUser,
     updateUser,
-    handleUserInputs,
+    handleUserUpdateInputs,
 }
