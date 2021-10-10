@@ -1,6 +1,6 @@
 const knex = require('../config/databaseConnection')
 const bcrypt = require('bcrypt')
-const { updateUser } = require('../services/usersService')
+const { updateUser, checkUser } = require('../services/usersService')
 
 const cadastrarUsuario = async (req, res) => {
     const { nome_usuario, email_usuario, senha } = req.body
