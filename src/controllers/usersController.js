@@ -9,6 +9,8 @@ const cadastrarUsuario = async (req, res) => {
     const { nome_usuario, email_usuario, senha } = req.body
     const usuarioObj = {}
 
+  
+
     try {
         await handleUserRegisterInputs(
             usuarioObj,
@@ -16,6 +18,9 @@ const cadastrarUsuario = async (req, res) => {
             email_usuario,
             senha
         )
+
+       
+
         if (!(await insertUser(usuarioObj))) {
             return res.status(400).json('O usuário não foi cadastrado.')
         }

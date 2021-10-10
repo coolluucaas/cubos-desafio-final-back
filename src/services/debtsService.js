@@ -23,7 +23,7 @@ const insertDebt = async (nome_cliente, id_cliente, dadosCliente) => {
             ...dadosCliente,
         }
 
-    console.log(cobrancaObj)
+   
 
     return knex('cobrancas').insert(cobrancaObj)
 }

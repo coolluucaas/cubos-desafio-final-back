@@ -47,7 +47,13 @@ const cadastrarCobranca = async (req, res) => {
     }
 }
 
+const editarCobranca = async (req, res) => {
+    const {} = req.body
+    const { id_cobranca } = req.params
+}
+
 module.exports = {
     listarCobrancas,
     cadastrarCobranca,
+    editarCobranca,
 }

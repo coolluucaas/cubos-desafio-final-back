@@ -5,13 +5,7 @@ const checkEmailUser = async (email_usuario) => {
     return knex('usuarios').where('email_usuario', email_usuario).first()
 }
 
-const insertUser = async (nome_usuario, email_usuario, senhaCriptografada) => {
-    const usuarioObj = {
-        nome_usuario,
-        email_usuario,
-        senha: senhaCriptografada,
-    }
-
+const insertUser = async (usuarioObj) => {
     return await knex('usuarios').insert(usuarioObj)
 }
 
@@ -19,7 +13,12 @@ const updateUser = async (usuarioObj, id_usuario) => {
     return knex('usuarios').update(usuarioObj).where('id_usuario', id_usuario)
 }
 
-const handleUserRegisterInputs = async (usuarioObj, email_usuario, senha, nome_usuario) => {
+const handleUserRegisterInputs = async (
+    usuarioObj,
+    nome_usuario,
+    email_usuario,
+    senha
+) => {
     usuarioObj.nome_usuario = nome_usuario
 
     if (await checkEmailUser(email_usuario)) {

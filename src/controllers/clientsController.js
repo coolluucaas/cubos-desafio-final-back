@@ -1,3 +1,4 @@
+const knex = require('../config/databaseConnection')
 const {
     insertClient,
     listClients,
@@ -65,7 +66,12 @@ const editarPerfilCliente = async (req, res) => {
         bairro,
         cidade,
     } = req.body
+
     const { id_cliente } = req.params
+
+    const { email_cliente: email_cadastrado } = await knex('clientes')
+        .where('id_cliente', id_cliente)
+        .first()
 
     if (
         !id_usuario &&
@@ -92,7 +98,7 @@ const editarPerfilCliente = async (req, res) => {
             clienteObj.nome_cliente = nome_cliente
         }
         if (email_cliente) {
-            if (email_cliente !== req.usuario.email_cliente) {
+            if (email_cliente !== email_cadastrado) {
                 if (await checkEmailClient(email_cliente)) {
                     return res
                         .status(400)
