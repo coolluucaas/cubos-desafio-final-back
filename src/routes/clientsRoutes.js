@@ -16,6 +16,10 @@ routesClientes.post(
     cadastrarClientes
 )
 routesClientes.get('/clientes', listarClientes)
-routesClientes.put('/cliente', validation(schemaEditarPerfilCliente), editarPerfilCliente)
+routesClientes.put(
+    '/cliente/:id_cliente',
+    validation(schemaEditarPerfilCliente),
+    editarPerfilCliente
+)
 
 module.exports = routesClientes

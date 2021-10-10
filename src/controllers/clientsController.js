@@ -1,5 +1,9 @@
-const knex = require('../config/databaseConnection')
-const { checkClient, insertClient, listClients } = require('../services/clientsService')
+const {
+    insertClient,
+    listClients,
+    updateClient,
+    checkEmailClient,
+} = require('../services/clientsService')
 const { listDebts } = require('../services/debtsService')
 
 const cadastrarClientes = async (req, res) => {
@@ -7,7 +11,7 @@ const cadastrarClientes = async (req, res) => {
     const { id_usuario } = req.usuario
 
     try {
-        if (await checkClient(email_cliente)) {
+        if (await checkEmailClient(email_cliente)) {
             return res
                 .status(400)
                 .json(
@@ -48,7 +52,91 @@ const listarClientes = async (req, res) => {
 }
 
 const editarPerfilCliente = async (req, res) => {
-    return res.json('() [] {}')
+    const {
+        id_usuario,
+        nome_cliente,
+        email_cliente,
+        cpf_cliente,
+        telefone_cliente,
+        cep,
+        logradouro,
+        complemento,
+        referencia,
+        bairro,
+        cidade,
+    } = req.body
+    const { id_cliente } = req.params
+
+    if (
+        !id_usuario &&
+        !nome_cliente &&
+        !email_cliente &&
+        !cpf_cliente &&
+        !telefone_cliente &&
+        !cep &&
+        !logradouro &&
+        !complemento &&
+        !referencia &&
+        !bairro &&
+        !cidade
+    ) {
+        return res
+            .status(404)
+            .json('É obrigatório informar ao menos um campo para atualização')
+    }
+
+    try {
+        const clienteObj = {}
+
+        if (nome_cliente) {
+            clienteObj.nome_cliente = nome_cliente
+        }
+        if (email_cliente) {
+            if (email_cliente !== req.usuario.email_cliente) {
+                if (await checkClient(email_cliente)) {
+                    return res
+                        .status(400)
+                        .json(
+                            'Email indisponível. Por favor, insira outro endereço.'
+                        )
+                }
+                clienteObj.email_cliente = email_cliente
+            }
+        }
+        if (cpf_cliente) {
+            clienteObj.cpf_cliente = cpf_cliente
+        }
+        if (telefone_cliente) {
+            clienteObj.telefone_cliente = telefone_cliente
+        }
+        if (cep) {
+            clienteObj.cep = cep
+        }
+        if (logradouro) {
+            clienteObj.logradouro = logradouro
+        }
+        if (complemento) {
+            clienteObj.complemento = complemento
+        }
+        if (referencia) {
+            clienteObj.referencia = referencia
+        }
+        if (bairro) {
+            clienteObj.bairro = bairro
+        }
+        if (cidade) {
+            clienteObj.cidade = cidade
+        }
+        if (!(await updateClient(clienteObj, id_cliente))) {
+            return res
+                .status(400)
+                .json('O perfil do usuario não foi atualizado')
+        }
+
+        return res.status(200).json('Perfil do cliente atualizado com sucesso.')
+    } catch (error) {
+        return res.status(400).json(error.message)
+    }
 }
 
 module.exports = {
