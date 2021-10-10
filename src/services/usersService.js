@@ -19,6 +19,21 @@ const updateUser = async (usuarioObj, id_usuario) => {
     return knex('usuarios').update(usuarioObj).where('id_usuario', id_usuario)
 }
 
+const handleUserRegisterInputs = async (usuarioObj, email_usuario, senha, nome_usuario) => {
+    usuarioObj.nome_usuario = nome_usuario
+
+    if (await checkEmailUser(email_usuario)) {
+        return res
+            .status(400)
+            .json('Email indisponível. Por favor, insira outro endereço.')
+    }
+
+    usuarioObj.email_usuario = email_usuario
+    usuarioObj.senha = await bcrypt.hash(senha, 10)
+
+    return usuarioObj
+}
+
 const handleUserUpdateInputs = async (
     nome_usuario,
     email_usuario,
@@ -27,7 +42,6 @@ const handleUserUpdateInputs = async (
     cpf_usuario,
     telefone_usuario,
     usuarioObj
-    
 ) => {
     if (
         !nome_usuario &&
@@ -44,7 +58,6 @@ const handleUserUpdateInputs = async (
         usuarioObj.nome_usuario = nome_usuario
     }
     if (email_usuario) {
-
         if (email_usuario !== email_cadastrado) {
             if (await checkEmailUser(email_usuario)) {
                 return res
@@ -76,4 +89,5 @@ module.exports = {
     insertUser,
     updateUser,
     handleUserUpdateInputs,
+    handleUserRegisterInputs,
 }

@@ -1,26 +1,22 @@
-const bcrypt = require('bcrypt')
 const {
     updateUser,
-    checkEmailUser,
     insertUser,
     handleUserUpdateInputs,
+    handleUserRegisterInputs,
 } = require('../services/usersService')
 
 const cadastrarUsuario = async (req, res) => {
     const { nome_usuario, email_usuario, senha } = req.body
+    const usuarioObj = {}
 
     try {
-        if (await checkEmailUser(email_usuario)) {
-            return res
-                .status(400)
-                .json('Email indisponível. Por favor, insira outro endereço.')
-        }
-
-        const senhaCriptografada = await bcrypt.hash(senha, 10)
-
-        if (
-            !(await insertUser(nome_usuario, email_usuario, senhaCriptografada))
-        ) {
+        await handleUserRegisterInputs(
+            usuarioObj,
+            nome_usuario,
+            email_usuario,
+            senha
+        )
+        if (!(await insertUser(usuarioObj))) {
             return res.status(400).json('O usuário não foi cadastrado.')
         }
 
@@ -55,7 +51,7 @@ const editarPerfilUsuario = async (req, res) => {
             senha,
             cpf_usuario,
             telefone_usuario,
-            usuarioObj            
+            usuarioObj
         )
 
         if (!(await updateUser(usuarioObj, id_usuario))) {
