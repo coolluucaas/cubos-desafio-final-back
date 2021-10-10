@@ -93,7 +93,7 @@ const editarPerfilCliente = async (req, res) => {
         }
         if (email_cliente) {
             if (email_cliente !== req.usuario.email_cliente) {
-                if (await checkClient(email_cliente)) {
+                if (await checkEmailClient(email_cliente)) {
                     return res
                         .status(400)
                         .json(
