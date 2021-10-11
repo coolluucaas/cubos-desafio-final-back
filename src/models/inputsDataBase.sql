@@ -5,7 +5,7 @@
    ( 1,'Gabriele Landim', 'tecnologiacritica@email.com', '001.234.567-89', '(71)09876-54321', '87654-321','Gabriele-logradouro', 'Gabriele-complemento','Gabriele-pontoDeReferencia', 'Gabriele-bairro','Gabriele-cidade');
 
   INSERT INTO cobrancas 
-    ( id_cliente, nome_cliente, descricao, data_vencimento, valor, esta_pago) 
+    ( id_cliente, nome_cliente, descricao, data_vencimento, valor, status) 
 	VALUES 
     ( 1,'Diego Digiandomenico', 'aaaaa', '2022-06-01', 1000, TRUE ),
     ( 1,'Diego Digiandomenico', 'bbbbb', '2022-06-01', 2000, TRUE ),

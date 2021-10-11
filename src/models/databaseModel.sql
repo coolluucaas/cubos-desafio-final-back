@@ -34,7 +34,7 @@ CREATE TABLE usuarios (
     descricao text not null,
   	valor integer not null,
     data_vencimento date not null,    
-    esta_pago boolean default false,    
+    status text not null,    
     foreign key (nome_cliente) references clientes (nome_cliente),
     foreign key (id_cliente) references clientes (id_cliente)   
    );   
