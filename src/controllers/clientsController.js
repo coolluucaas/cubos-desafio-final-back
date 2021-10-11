@@ -91,7 +91,7 @@ const editarPerfilCliente = async (req, res) => {
         if (!(await updateClient(inputs.clienteObj, id_cliente))) {
             return res
                 .status(400)
-                .json('O perfil do usuario não foi atualizado')
+                .json('Perfil do cliente não foi atualizado.')
         }
 
         return res.status(200).json('Perfil do cliente atualizado com sucesso.')
