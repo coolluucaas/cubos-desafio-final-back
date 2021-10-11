@@ -19,7 +19,7 @@ const cadastrarUsuario = async (req, res) => {
             return res.status(inputs.statusCode).json(inputs.message)
         }
 
-        if (!(await insertUser(input.usuarioObj))) {
+        if (!(await insertUser(inputs.usuarioObj))) {
             return res.status(400).json('O usuário não foi cadastrado.')
         }
 
