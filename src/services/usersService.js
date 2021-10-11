@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const knex = require('../config/databaseConnection')
 
-const checkEmailUser = async (email_usuario) => {
+const findUserById = async (email_usuario) => {
     return knex('usuarios').where('email_usuario', email_usuario).first()
 }
 
@@ -14,23 +14,30 @@ const updateUser = async (usuarioObj, id_usuario) => {
 }
 
 const handleUserRegisterInputs = async (
-    usuarioObj,
+    // usuarioObj,
     nome_usuario,
     email_usuario,
-    senha
+    senha  
 ) => {
+    const usuarioObj = {}
+
     usuarioObj.nome_usuario = nome_usuario
 
-    if (await checkEmailUser(email_usuario)) {
-        return res
-            .status(400)
-            .json('Email indisponível. Por favor, insira outro endereço.')
+    if (await findUserById(email_usuario)) {
+        return { 
+            success: false,
+            statusCode: 400,
+            message:'Email indisponível. Por favor, insira outro endereço.'
+        }            
     }
 
     usuarioObj.email_usuario = email_usuario
     usuarioObj.senha = await bcrypt.hash(senha, 10)
 
-    return usuarioObj
+    return { 
+        success: true,
+        usuarioObj 
+    }
 }
 
 const handleUserUpdateInputs = async (
@@ -39,9 +46,10 @@ const handleUserUpdateInputs = async (
     email_cadastrado,
     senha,
     cpf_usuario,
-    telefone_usuario,
-    usuarioObj
+    telefone_usuario
 ) => {
+
+    const usuarioObj = {}
     if (
         !nome_usuario &&
         !email_usuario &&
@@ -49,27 +57,28 @@ const handleUserUpdateInputs = async (
         !cpf_usuario &&
         !telefone_usuario
     ) {
-        return res
-            .status(404)
-            .json('É obrigatório informar ao menos um campo para atualização')
+        return { 
+            success: false,
+            statusCode: 404,
+            message:'É obrigatório informar ao menos um campo para atualização'
+        }  
     }
     if (nome_usuario) {
         usuarioObj.nome_usuario = nome_usuario
     }
     if (email_usuario) {
         if (email_usuario !== email_cadastrado) {
-            if (await checkEmailUser(email_usuario)) {
-                return res
-                    .status(400)
-                    .json(
-                        'Email indisponível. Por favor, insira outro endereço.'
-                    )
+            if (await findUserById(email_usuario)) {
+                return { 
+                    success: false,
+                    statusCode: 400,
+                    message:'Email indisponível. Por favor, insira outro endereço.'
+                }              
             }
         }
 
         usuarioObj.email_usuario = email_usuario
     }
-
     if (senha) {
         usuarioObj.senha = await bcrypt.hash(senha, 10)
     }
@@ -80,11 +89,14 @@ const handleUserUpdateInputs = async (
         usuarioObj.telefone_usuario = telefone_usuario
     }
 
-    return usuarioObj
+    return { 
+        success: true,
+        usuarioObj 
+    }
 }
 
 module.exports = {
-    checkEmailUser,
+    findUserById,
     insertUser,
     updateUser,
     handleUserUpdateInputs,

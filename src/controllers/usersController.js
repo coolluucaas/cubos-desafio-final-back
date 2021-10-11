@@ -7,21 +7,19 @@ const {
 
 const cadastrarUsuario = async (req, res) => {
     const { nome_usuario, email_usuario, senha } = req.body
-    const usuarioObj = {}
-
-  
 
     try {
-        await handleUserRegisterInputs(
-            usuarioObj,
+        const inputs = await handleUserRegisterInputs(            
             nome_usuario,
             email_usuario,
             senha
-        )
+        )       
 
-       
+        if (!inputs.success) {
+            return res.status(inputs.statusCode).json(inputs.message)
+        }
 
-        if (!(await insertUser(usuarioObj))) {
+        if (!(await insertUser(input.usuarioObj))) {
             return res.status(400).json('O usuário não foi cadastrado.')
         }
 
@@ -45,21 +43,23 @@ const editarPerfilUsuario = async (req, res) => {
     } = req.body
     const {
         usuario: { id_usuario, email_usuario: email_cadastrado },
-    } = req
-    const usuarioObj = {}
+    } = req    
 
     try {
-        await handleUserUpdateInputs(
+        const inputs = await handleUserUpdateInputs(
             nome_usuario,
             email_usuario,
             email_cadastrado,
             senha,
             cpf_usuario,
-            telefone_usuario,
-            usuarioObj
+            telefone_usuario
         )
 
-        if (!(await updateUser(usuarioObj, id_usuario))) {
+        if (!inputs.success) {
+            res.status(inputs.status).json(inputs.message)
+        }
+
+        if (!(await updateUser(inputs.usuarioObj, id_usuario))) {
             return res
                 .status(400)
                 .json('O perfil do usuario não foi atualizado')
