@@ -108,16 +108,16 @@ const listClients = async () => {
                     'd.valor',
                     knex.raw(`(
             CASE
-            WHEN d.esta_pago IS TRUE THEN d.valor
+            WHEN d.status = 'PAGO' THEN d.valor
             ELSE 0
             END
            ) as valor_pago`),
                     knex.raw(`( 
             CASE 
-            WHEN d.esta_pago IS FALSE AND d.data_vencimento < NOW() THEN 0
+            WHEN d.status = 'PENDENTE' AND d.data_vencimento < NOW() THEN 0
             ELSE 1
             END
-            ) as status`),
+            )as status_cobranca`),
                 ])
                 .from('clientes as c')
                 .leftJoin('cobrancas as d', 'c.id_cliente', '=', 'd.id_cliente')
@@ -138,11 +138,11 @@ const listClients = async () => {
             knex.raw('sum(valor_pago) as cobrancas_recebidas'),
             knex.raw(`
     (
-      CASE MIN(status)
+      CASE MIN(status_cobranca)
       WHEN 0 THEN 'INADIMPLENTE'
       WHEN 1 THEN 'EM DIA'
       END
-    ) as status`),
+    ) as status_final`),
         ])
         .from('tabela_de_inadimplencia')
         .groupBy([

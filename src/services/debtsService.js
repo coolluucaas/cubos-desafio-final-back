@@ -6,11 +6,11 @@ const listDebts = async () => {
             '*',
             knex.raw(`( 
         CASE 
-        WHEN esta_pago IS TRUE THEN 'PAGO'
-        WHEN esta_pago IS FALSE AND data_vencimento<= NOW() THEN 'PENDENTE'
-        WHEN esta_pago IS FALSE AND data_vencimento > NOW() THEN 'VENCIDO'                
+        WHEN status = 'PAGO' THEN 'PAGO'
+        WHEN status = 'PENDENTE' AND data_vencimento<= NOW() THEN 'PENDENTE'
+        WHEN status = 'PENDENTE' AND data_vencimento > NOW() THEN 'VENCIDO'                
         END
-        ) as status`),
+        ) as status2`),
         ])
         .from('cobrancas')
 }
