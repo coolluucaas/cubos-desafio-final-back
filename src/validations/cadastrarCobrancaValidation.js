@@ -1,12 +1,11 @@
 const yup = require('../config/yup')
 
-const schemaCadastrarCobrança = yup.object().shape({    
+const schemaCadastrarCobranca = yup.object().shape({    
     nome_cliente: yup.string().required(),
-    descricao: yup.string().required(),
-    email_cliente: yup.string().required(),
+    descricao: yup.string().required(),   
+    status: yup.string().required(),
     valor: yup.number().required(),
-    vencimento: yup.date().required(),   
-    esta_pago: yup.boolean().required()
+    data_vencimento: yup.date().required()   
 })
 
-module.exports = schemaCadastrarCobrança
+module.exports = schemaCadastrarCobranca

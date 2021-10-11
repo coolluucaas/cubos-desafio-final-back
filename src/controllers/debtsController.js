@@ -1,13 +1,13 @@
 const knex = require('../config/databaseConnection')
-const { findClient } = require('../services/clientsService')
-const { insertDebt } = require('../services/debtsService')
+const { findClientByName } = require('../services/clientsService')
+const { insertDebt, updateDebt, handleDebtUpdateInputs } = require('../services/debtsService')
 
 const listarCobrancas = async (req, res) => {
     try {
         const cobrancas = await knex
             .select([
-                'id as id_cobranca',
-                'nome',
+                'id_cliente',
+                'nome_',
                 'descricao',
                 'valor',
                 knex.raw(`( 
@@ -31,12 +31,11 @@ const cadastrarCobranca = async (req, res) => {
     let cobrancaObj = {}
 
     try {
-        const { id_cliente } = await findClient(nome_cliente)
+        const { id_cliente } = await findClientByName(nome_cliente)
 
         if (!id_cliente) {
             return res.status(400).json('Cliente não cadastrado.')
         }
-
         if (!(await insertDebt(nome_cliente, id_cliente, dadosCliente))) {
             return res.status(400).json('Cobranca não cadastrada.')
         }
@@ -48,8 +47,28 @@ const cadastrarCobranca = async (req, res) => {
 }
 
 const editarCobranca = async (req, res) => {
-    const {} = req.body
+    const { nome_cliente, descricao, data_vencimento, valor, status } = req.body
     const { id_cobranca } = req.params
+    try {
+        const inputs = await handleDebtUpdateInputs(
+            nome_cliente,
+            descricao,
+            data_vencimento,
+            valor,
+            status
+        )
+
+        if (!inputs.success) {
+            res.status(inputs.status).json(inputs.message)
+        }
+        if (!(await updateDebt(inputs.cobrancaObj, id_cobranca))) {
+            return res.status(400).json('Cobranca não atualizada')
+        }
+
+        return res.status(200).json('Cobranca atualizada com sucesso.')
+    } catch (error) {
+        return res.status(400).json(error.message)
+    }
 }
 
 module.exports = {
