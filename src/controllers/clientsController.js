@@ -1,9 +1,10 @@
-const knex = require('../config/databaseConnection')
 const {
     insertClient,
     listClients,
     updateClient,
-    checkEmailClient,
+    findClientByEmail,
+    findClientById,
+    handleClientUpdateInputs,
 } = require('../services/clientsService')
 const { listDebts } = require('../services/debtsService')
 
@@ -12,7 +13,7 @@ const cadastrarClientes = async (req, res) => {
     const { id_usuario } = req.usuario
 
     try {
-        if (await checkEmailClient(email_cliente)) {
+        if (await findClientByEmail(email_cliente)) {
             return res
                 .status(400)
                 .json(
@@ -53,8 +54,7 @@ const listarClientes = async (req, res) => {
 }
 
 const editarPerfilCliente = async (req, res) => {
-    const {
-        id_usuario,
+    const {        
         nome_cliente,
         email_cliente,
         cpf_cliente,
@@ -69,71 +69,26 @@ const editarPerfilCliente = async (req, res) => {
 
     const { id_cliente } = req.params
 
-    const { email_cliente: email_cadastrado } = await knex('clientes')
-        .where('id_cliente', id_cliente)
-        .first()
-
-    if (
-        !id_usuario &&
-        !nome_cliente &&
-        !email_cliente &&
-        !cpf_cliente &&
-        !telefone_cliente &&
-        !cep &&
-        !logradouro &&
-        !complemento &&
-        !referencia &&
-        !bairro &&
-        !cidade
-    ) {
-        return res
-            .status(404)
-            .json('É obrigatório informar ao menos um campo para atualização')
-    }
-
     try {
-        const clienteObj = {}
+        const inputs = await handleClientUpdateInputs(            
+            id_cliente,
+            nome_cliente,
+            email_cliente,
+            cpf_cliente,
+            telefone_cliente,
+            cep,
+            logradouro,
+            complemento,
+            referencia,
+            bairro,
+            cidade
+        )
 
-        if (nome_cliente) {
-            clienteObj.nome_cliente = nome_cliente
+        if (!inputs.success) {
+            res.status(inputs.status).json(inputs.message)
         }
-        if (email_cliente) {
-            if (email_cliente !== email_cadastrado) {
-                if (await checkEmailClient(email_cliente)) {
-                    return res
-                        .status(400)
-                        .json(
-                            'Email indisponível. Por favor, insira outro endereço.'
-                        )
-                }
-                clienteObj.email_cliente = email_cliente
-            }
-        }
-        if (cpf_cliente) {
-            clienteObj.cpf_cliente = cpf_cliente
-        }
-        if (telefone_cliente) {
-            clienteObj.telefone_cliente = telefone_cliente
-        }
-        if (cep) {
-            clienteObj.cep = cep
-        }
-        if (logradouro) {
-            clienteObj.logradouro = logradouro
-        }
-        if (complemento) {
-            clienteObj.complemento = complemento
-        }
-        if (referencia) {
-            clienteObj.referencia = referencia
-        }
-        if (bairro) {
-            clienteObj.bairro = bairro
-        }
-        if (cidade) {
-            clienteObj.cidade = cidade
-        }
-        if (!(await updateClient(clienteObj, id_cliente))) {
+
+        if (!(await updateClient(inputs.clienteObj, id_cliente))) {
             return res
                 .status(400)
                 .json('O perfil do usuario não foi atualizado')
