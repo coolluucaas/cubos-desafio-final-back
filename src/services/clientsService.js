@@ -106,6 +106,7 @@ const listClients = async () => {
                 .select([
                     'c.*',
                     'd.valor',
+                    'd.status',                    
                     knex.raw(`(
             CASE
             WHEN d.status = 'PAGO' THEN d.valor
@@ -142,7 +143,7 @@ const listClients = async () => {
       WHEN 0 THEN 'INADIMPLENTE'
       WHEN 1 THEN 'EM DIA'
       END
-    ) as status_final`),
+    ) as status_cliente`),
         ])
         .from('tabela_de_inadimplencia')
         .groupBy([

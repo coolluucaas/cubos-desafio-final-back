@@ -3,14 +3,19 @@ const knex = require('../config/databaseConnection')
 const listDebts = async () => {
     return knex
         .select([
-            '*',
+            'id_cobranca',
+            'id_cliente',
+            'nome_cliente',
+            'descricao',
+            'data_vencimento',
+            'valor',
             knex.raw(`( 
         CASE 
         WHEN status = 'PAGO' THEN 'PAGO'
-        WHEN status = 'PENDENTE' AND data_vencimento<= NOW() THEN 'PENDENTE'
-        WHEN status = 'PENDENTE' AND data_vencimento > NOW() THEN 'VENCIDO'                
+        WHEN status = 'PENDENTE' AND data_vencimento < CURRENT_DATE THEN 'VENCIDO' 
+        WHEN status = 'PENDENTE' AND data_vencimento >= CURRENT_DATE THEN 'PENDENTE'             
         END
-        ) as status2`),
+        ) as status_cobranca`),
         ])
         .from('cobrancas')
 }
@@ -25,21 +30,15 @@ const insertDebt = async (nome_cliente, id_cliente, dadosCliente) => {
     return knex('cobrancas').insert(cobrancaObj)
 }
 
-const handleDebtUpdateInputs = async(   
+const handleDebtUpdateInputs = async (
     nome_cliente,
     descricao,
     data_vencimento,
     valor,
     status
-) =>{
+) => {
     const cobrancaObj = {}
-    if (
-        !nome_cliente &&
-        !descricao &&
-        !data_vencimento &&
-        !valor &&
-        !status        
-    ) {
+    if (!nome_cliente && !descricao && !data_vencimento && !valor && !status) {
         return {
             success: false,
             statusCode: 404,
@@ -67,13 +66,15 @@ const handleDebtUpdateInputs = async(
     }
 }
 
-const updateDebt = async (cobrancaObj, id_cobranca) =>{
-    return knex('cobrancas').update(cobrancaObj).where('id_cobranca', id_cobranca)
+const updateDebt = async (cobrancaObj, id_cobranca) => {
+    return knex('cobrancas')
+        .update(cobrancaObj)
+        .where('id_cobranca', id_cobranca)
 }
 
 module.exports = {
     listDebts,
     insertDebt,
     handleDebtUpdateInputs,
-    updateDebt
+    updateDebt,
 }
