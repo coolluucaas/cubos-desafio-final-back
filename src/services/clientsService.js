@@ -157,8 +157,9 @@ const listClients = async () => {
            ) as valor_pago`),
                     knex.raw(`( 
             CASE 
-            WHEN d.status = 'PENDENTE' AND d.data_vencimento < NOW() THEN 0
-            ELSE 1
+            WHEN d.status = 'PAGO' THEN 1
+            WHEN d.status = 'PENDENTE' AND d.data_vencimento >= CURRENT_DATE THEN 1            
+            ELSE 0
             END
             )as status_cobranca`),
                 ])
