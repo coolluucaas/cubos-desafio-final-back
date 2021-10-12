@@ -47,15 +47,13 @@ const listarClientes = async (req, res) => {
 }
 
 const editarPerfilCliente = async (req, res) => {
-    const { id_cliente } = req.params
-
     try {
         const inputs = await handleClientUpdateInputs(req)
 
         if (!inputs.success) {
             return res.status(inputs.statusCode).json(inputs.message)
         }
-        if (!(await updateClient(inputs.clienteObj, id_cliente))) {
+        if (!(await updateClient(inputs.clienteObj))) {
             return res.status(400).json('Perfil do cliente não foi atualizado.')
         }
 

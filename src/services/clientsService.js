@@ -27,6 +27,7 @@ const handleClientUpdateInputs = async (req) => {
         bairro,
         cidade,
     } = req.body
+    const { id_cliente } = req.params
     const clienteObj = {}
     if (
         !nome_cliente &&
@@ -47,6 +48,8 @@ const handleClientUpdateInputs = async (req) => {
                 'É obrigatório informar ao menos um campo para atualização',
         }
     }
+
+    clienteObj.id_cliente = id_cliente
 
     if (nome_cliente) {
         clienteObj.nome_cliente = nome_cliente
@@ -101,7 +104,7 @@ const handleClientUpdateInputs = async (req) => {
 const handleClientRegisterInputs = async (req) => {
     const { email_cliente, nome_cliente, ...dadosCliente } = req.body
     const { id_usuario } = req.usuario
-    const clienteObj = {}
+    let clienteObj = {}
 
     if (await findClientByEmail(email_cliente)) {
         return {
@@ -199,8 +202,8 @@ const insertClient = async (clienteObj) => {
     return knex('clientes').insert(clienteObj)
 }
 
-const updateClient = async (clienteObj, id_cliente) => {
-    return knex('clientes').update(clienteObj).where('id_cliente', id_cliente)
+const updateClient = async (clienteObj) => {
+    return knex('clientes').update(clienteObj).where('id_cliente', clienteObj.id_cliente)
 }
 
 module.exports = {
