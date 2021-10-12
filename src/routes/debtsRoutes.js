@@ -3,6 +3,7 @@ const {
     listarCobrancas,
     cadastrarCobranca,
     editarCobranca,
+    excluirCobranca,
 } = require('../controllers/debtsController')
 const validation = require('../middlewares/validationMiddleware')
 const schemaCadastrarCobranca = require('../validations/cadastrarCobrancaValidation')
@@ -16,6 +17,7 @@ routesCobrancas.post(
     validation(schemaCadastrarCobranca),
     cadastrarCobranca
 )
-routesCobrancas.put('/cobranca/:id_cobranca',validation(schemaEditarCobranca), editarCobranca)
+routesCobrancas.put('/cobranca/:id_cobranca', validation(schemaEditarCobranca), editarCobranca)
+routesCobrancas.delete('/cobranca/:id_cobranca', excluirCobranca)
 
 module.exports = routesCobrancas

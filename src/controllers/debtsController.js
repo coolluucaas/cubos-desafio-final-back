@@ -1,5 +1,5 @@
 const knex = require('../config/databaseConnection')
-const { findClientByName } = require('../services/clientsService')
+const { findClientByName, findClientById } = require('../services/clientsService')
 const { insertDebt, updateDebt, handleDebtUpdateInputs } = require('../services/debtsService')
 
 const listarCobrancas = async (req, res) => {
@@ -27,16 +27,13 @@ const listarCobrancas = async (req, res) => {
 }
 
 const cadastrarCobranca = async (req, res) => {
-    const { nome_cliente, ...dadosCliente } = req.body
-    let cobrancaObj = {}
+    const { id_cliente, ...dadosCliente } = req.body   
 
     try {
-        const { id_cliente } = await findClientByName(nome_cliente)
-
-        if (!id_cliente) {
+        if (!await findClientById(id_cliente)) {
             return res.status(400).json('Cliente não cadastrado.')
         }
-        if (!(await insertDebt(nome_cliente, id_cliente, dadosCliente))) {
+        if (!(await insertDebt( id_cliente, dadosCliente))) {
             return res.status(400).json('Cobranca não cadastrada.')
         }
 
@@ -47,16 +44,10 @@ const cadastrarCobranca = async (req, res) => {
 }
 
 const editarCobranca = async (req, res) => {
-    const { nome_cliente, descricao, data_vencimento, valor, status } = req.body
+   
     const { id_cobranca } = req.params
     try {
-        const inputs = await handleDebtUpdateInputs(
-            nome_cliente,
-            descricao,
-            data_vencimento,
-            valor,
-            status
-        )
+        const inputs = await handleDebtUpdateInputs(req)
 
         if (!inputs.success) {
             res.status(inputs.status).json(inputs.message)
@@ -71,8 +62,13 @@ const editarCobranca = async (req, res) => {
     }
 }
 
+const excluirCobranca = async (req, res) => {
+
+} 
+
 module.exports = {
     listarCobrancas,
     cadastrarCobranca,
     editarCobranca,
+    excluirCobranca
 }
