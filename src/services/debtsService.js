@@ -20,9 +20,10 @@ const listDebts = async () => {
         .from('cobrancas')
 }
 
-const insertDebt = async (id_cliente, dadosCliente) => {
+const insertDebt = async (id_cliente, nome_cliente, dadosCliente) => {
     const cobrancaObj = {
         id_cliente,
+        nome_cliente,
         ...dadosCliente,
     }
 

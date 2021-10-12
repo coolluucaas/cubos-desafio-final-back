@@ -123,9 +123,7 @@ const handleClientRegisterInputs = async (req) => {
         email_cliente,
         nome_cliente,
         dadosCliente,
-    }
-    
-    console.log('clienteObj',clienteObj)
+    }  
 
     return {
         success: true,
