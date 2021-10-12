@@ -1,5 +1,25 @@
 const knex = require('../config/databaseConnection')
 
+const listDebtsAsComponentOfClientDetail = async () => {
+    return knex
+        .select([
+            'id_cobranca',
+            'id_cliente',
+            'nome_cliente',
+            'descricao',
+            'data_vencimento',
+            'valor',
+            knex.raw(`( 
+        CASE 
+        WHEN status = 'PAGO' THEN 'PAGO'
+        WHEN status = 'PENDENTE' AND data_vencimento < CURRENT_DATE THEN 'VENCIDO' 
+        WHEN status = 'PENDENTE' AND data_vencimento >= CURRENT_DATE THEN 'PENDENTE'             
+        END
+        ) as status_cobranca`),
+        ])
+        .from('cobrancas')
+}
+
 const listDebts = async () => {
     return knex
         .select([
@@ -9,6 +29,7 @@ const listDebts = async () => {
             'descricao',
             'data_vencimento',
             'valor',
+            'status',            
             knex.raw(`( 
         CASE 
         WHEN status = 'PAGO' THEN 'PAGO'
@@ -69,6 +90,7 @@ const updateDebt = async (cobrancaObj, id_cobranca) => {
 
 module.exports = {
     listDebts,
+    listDebtsAsComponentOfClientDetail,
     insertDebt,
     handleDebtUpdateInputs,
     updateDebt,

@@ -5,13 +5,13 @@ const {
     handleClientUpdateInputs,
     handleClientRegisterInputs,
 } = require('../services/clientsService')
-const { listDebts } = require('../services/debtsService')
+const { listDebts, listDebtsAsComponentOfClientDetail } = require('../services/debtsService')
 
 
 const listarClientes = async (req, res) => {
     try {
         const clientes = await listClients()
-        const cobrancas = await listDebts()
+        const cobrancas = await listDebtsAsComponentOfClientDetail()
 
         for (const cliente of clientes) {
             cliente.cobrancas = []
