@@ -1,6 +1,6 @@
 const yup = require('../config/yup')
 
-const schemaEditarPerfilCliente = yup.object().shape({
+const schemaEditarPerfilCliente = yup.object().shape({    
     nome: yup.string(),
     email: yup.string(),
     cpf: yup.string().min(14).max(14),

@@ -5,10 +5,7 @@ const findClientByEmail = async (email_cliente) => {
 }
 
 const findClientByName = async (nome_cliente) => {
-    return knex('clientes')
-        .select('id_cliente')
-        .where('nome_cliente', nome_cliente)
-        .first()
+    return knex('clientes').where('nome_cliente', nome_cliente).first()
 }
 
 const findClientById = async (id_cliente) => {
@@ -48,8 +45,17 @@ const handleClientUpdateInputs = async (req) => {
                 'É obrigatório informar ao menos um campo para atualização',
         }
     }
-
-    clienteObj.id_cliente = id_cliente
+    if (id_cliente) {
+        if (!(await findClientById(id_cliente))) {
+            return {
+                success: false,
+                statusCode: 400,
+                message:
+                    'Não há cliente cadastrado com o id informado. Por favor, insira um id válido.',
+            }
+        }
+        clienteObj.id_cliente = id_cliente
+    }
 
     if (nome_cliente) {
         clienteObj.nome_cliente = nome_cliente
@@ -117,7 +123,7 @@ const handleClientRegisterInputs = async (req) => {
         return {
             success: false,
             statusCode: 400,
-            message: 'Email indisponível. Por favor, insira outro endereço.',
+            message: 'Nome de cliente indisponível. Por favor, insira outro.',
         }
     }
 
@@ -126,7 +132,7 @@ const handleClientRegisterInputs = async (req) => {
         email_cliente,
         nome_cliente,
         ...dadosCliente,
-    }  
+    }
 
     return {
         success: true,
@@ -203,7 +209,9 @@ const insertClient = async (clienteObj) => {
 }
 
 const updateClient = async (clienteObj) => {
-    return knex('clientes').update(clienteObj).where('id_cliente', clienteObj.id_cliente)
+    return knex('clientes')
+        .update(clienteObj)
+        .where('id_cliente', clienteObj.id_cliente)
 }
 
 module.exports = {

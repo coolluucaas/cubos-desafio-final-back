@@ -7,22 +7,6 @@ const {
 } = require('../services/clientsService')
 const { listDebts } = require('../services/debtsService')
 
-const cadastrarClientes = async (req, res) => {
-    try {
-        const inputs = await handleClientRegisterInputs(req)
-
-        if (!inputs.success) {
-            return res.status(inputs.statusCode).json(inputs.message)
-        }
-        if (!(await insertClient(inputs.clienteObj))) {
-            return res.status(400).json('O cliente não foi cadastrado.')
-        }
-
-        return res.status(200).json('O cliente foi cadastrado com sucesso!')
-    } catch (error) {
-        return res.status(400).json(error.message)
-    }
-}
 
 const listarClientes = async (req, res) => {
     try {
@@ -45,6 +29,24 @@ const listarClientes = async (req, res) => {
         return res.status(400).json(error.message)
     }
 }
+
+const cadastrarClientes = async (req, res) => {
+    try {
+        const inputs = await handleClientRegisterInputs(req)
+
+        if (!inputs.success) {
+            return res.status(inputs.statusCode).json(inputs.message)
+        }
+        if (!(await insertClient(inputs.clienteObj))) {
+            return res.status(400).json('O cliente não foi cadastrado.')
+        }
+
+        return res.status(200).json('O cliente foi cadastrado com sucesso!')
+    } catch (error) {
+        return res.status(400).json(error.message)
+    }
+}
+
 
 const editarPerfilCliente = async (req, res) => {
     try {
