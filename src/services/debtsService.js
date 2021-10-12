@@ -20,9 +20,8 @@ const listDebts = async () => {
         .from('cobrancas')
 }
 
-const insertDebt = async (nome_cliente, id_cliente, dadosCliente) => {
-    cobrancaObj = {
-        nome_cliente,
+const insertDebt = async (id_cliente, dadosCliente) => {
+    const cobrancaObj = {
         id_cliente,
         ...dadosCliente,
     }
@@ -30,13 +29,8 @@ const insertDebt = async (nome_cliente, id_cliente, dadosCliente) => {
     return knex('cobrancas').insert(cobrancaObj)
 }
 
-const handleDebtUpdateInputs = async (
-    nome_cliente,
-    descricao,
-    data_vencimento,
-    valor,
-    status
-) => {
+const handleDebtUpdateInputs = async (req) => {
+    const { nome_cliente, descricao, data_vencimento, valor, status } = req.body
     const cobrancaObj = {}
     if (!nome_cliente && !descricao && !data_vencimento && !valor && !status) {
         return {

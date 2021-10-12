@@ -6,19 +6,12 @@ const {
 } = require('../services/usersService')
 
 const cadastrarUsuario = async (req, res) => {
-    const { nome_usuario, email_usuario, senha } = req.body
-
     try {
-        const inputs = await handleUserRegisterInputs(            
-            nome_usuario,
-            email_usuario,
-            senha
-        )       
+        const inputs = await handleUserRegisterInputs(req)
 
         if (!inputs.success) {
             return res.status(inputs.statusCode).json(inputs.message)
         }
-
         if (!(await insertUser(inputs.usuarioObj))) {
             return res.status(400).json('O usuário não foi cadastrado.')
         }
@@ -34,31 +27,14 @@ const obterPerfil = async (req, res) => {
 }
 
 const editarPerfilUsuario = async (req, res) => {
-    const {
-        nome_usuario,
-        email_usuario,
-        senha,
-        cpf_usuario,
-        telefone_usuario,
-    } = req.body
-    const {
-        usuario: { id_usuario, email_usuario: email_cadastrado },
-    } = req    
+    const { id_usuario } = req.usuario
 
     try {
-        const inputs = await handleUserUpdateInputs(
-            nome_usuario,
-            email_usuario,
-            email_cadastrado,
-            senha,
-            cpf_usuario,
-            telefone_usuario
-        )
+        const inputs = await handleUserUpdateInputs(req)
 
         if (!inputs.success) {
             res.status(inputs.status).json(inputs.message)
         }
-
         if (!(await updateUser(inputs.usuarioObj, id_usuario))) {
             return res
                 .status(400)

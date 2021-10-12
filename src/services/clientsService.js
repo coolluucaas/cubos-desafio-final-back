@@ -14,19 +14,19 @@ const findClientByName = async (nome_cliente) => {
 const findClientById = async (id_cliente) => {
     return knex('clientes').where('id_cliente', id_cliente).first()
 }
-const handleClientUpdateInputs = async (
-    id_cliente,
-    nome_cliente,
-    email_cliente,
-    cpf_cliente,
-    telefone_cliente,
-    cep,
-    logradouro,
-    complemento,
-    referencia,
-    bairro,
-    cidade
-) => {
+const handleClientUpdateInputs = async (req) => {
+    const {
+        nome_cliente,
+        email_cliente,
+        cpf_cliente,
+        telefone_cliente,
+        cep,
+        logradouro,
+        complemento,
+        referencia,
+        bairro,
+        cidade,
+    } = req.body
     const clienteObj = {}
     if (
         !nome_cliente &&
@@ -98,6 +98,41 @@ const handleClientUpdateInputs = async (
     }
 }
 
+const handleClientRegisterInputs = async (req) => {
+    const { email_cliente, nome_cliente, ...dadosCliente } = req.body
+    const { id_usuario } = req.usuario
+    const clienteObj = {}
+
+    if (await findClientByEmail(email_cliente)) {
+        return {
+            success: false,
+            statusCode: 400,
+            message: 'Email indisponível. Por favor, insira outro endereço.',
+        }
+    }
+    if (await findClientByName(nome_cliente)) {
+        return {
+            success: false,
+            statusCode: 400,
+            message: 'Email indisponível. Por favor, insira outro endereço.',
+        }
+    }
+
+    clienteObj = {
+        id_usuario,
+        email_cliente,
+        nome_cliente,
+        dadosCliente,
+    }
+    
+    console.log('clienteObj',clienteObj)
+
+    return {
+        success: true,
+        clienteObj,
+    }
+}
+
 const listClients = async () => {
     return knex
         .with(
@@ -106,7 +141,7 @@ const listClients = async () => {
                 .select([
                     'c.*',
                     'd.valor',
-                    'd.status',                    
+                    'd.status',
                     knex.raw(`(
             CASE
             WHEN d.status = 'PAGO' THEN d.valor
@@ -162,13 +197,7 @@ const listClients = async () => {
         .orderBy('id_cliente')
 }
 
-const insertClient = async (id_usuario, email_cliente, dadosCliente) => {
-    const clienteObj = {
-        id_usuario,
-        email_cliente,
-        ...dadosCliente,
-    }
-
+const insertClient = async (clienteObj) => {
     return knex('clientes').insert(clienteObj)
 }
 
@@ -180,6 +209,7 @@ module.exports = {
     findClientById,
     findClientByEmail,
     findClientByName,
+    handleClientRegisterInputs,
     handleClientUpdateInputs,
     listClients,
     insertClient,

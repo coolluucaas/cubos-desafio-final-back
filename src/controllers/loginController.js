@@ -1,25 +1,18 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const knex = require('../config/databaseConnection')
+const { findUserByEmail } = require('../services/usersService')
 
 const logarUsuario = async (req, res) => {
-    const { email_usuario, senha } = req.body 
+    const { email_usuario, senha } = req.body
 
     try {
-        const usuario = await knex('usuarios')
-            .where('email_usuario', email_usuario)
-            .first()
+        const usuario = await findUserByEmail(email_usuario)
 
         if (!usuario) {
             return res.status(400).json('O usuario não foi encontrado')
         }
 
-        const senhaVerificacao = await bcrypt.compare(
-            senha,
-            usuario.senha
-        )
-
-        if (!senhaVerificacao) {
+        if (!(await bcrypt.compare(senha, usuario.senha))) {
             return res.status(400).json('Email ou senha incorretos.')
         }
 

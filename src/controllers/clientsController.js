@@ -2,26 +2,19 @@ const {
     insertClient,
     listClients,
     updateClient,
-    findClientByEmail,
-    findClientById,
     handleClientUpdateInputs,
+    handleClientRegisterInputs,
 } = require('../services/clientsService')
 const { listDebts } = require('../services/debtsService')
 
 const cadastrarClientes = async (req, res) => {
-    const { email_cliente, ...dadosCliente } = req.body
-    const { id_usuario } = req.usuario
-
     try {
-        if (await findClientByEmail(email_cliente)) {
-            return res
-                .status(400)
-                .json(
-                    'O email já foi cadastro, por favor insira um email diferente.'
-                )
-        }
+        const inputs = await handleClientRegisterInputs(req)
 
-        if (!(await insertClient(id_usuario, email_cliente, dadosCliente))) {
+        if (!inputs.success) {
+            return res.status(inputs.statusCode).json(inputs.message)
+        }
+        if (!(await insertClient(inputs.clienteObj))) {
             return res.status(400).json('O cliente não foi cadastrado.')
         }
 
@@ -54,44 +47,16 @@ const listarClientes = async (req, res) => {
 }
 
 const editarPerfilCliente = async (req, res) => {
-    const {        
-        nome_cliente,
-        email_cliente,
-        cpf_cliente,
-        telefone_cliente,
-        cep,
-        logradouro,
-        complemento,
-        referencia,
-        bairro,
-        cidade,
-    } = req.body
-
     const { id_cliente } = req.params
 
     try {
-        const inputs = await handleClientUpdateInputs(            
-            id_cliente,
-            nome_cliente,
-            email_cliente,
-            cpf_cliente,
-            telefone_cliente,
-            cep,
-            logradouro,
-            complemento,
-            referencia,
-            bairro,
-            cidade
-        )
+        const inputs = await handleClientUpdateInputs(req)
 
         if (!inputs.success) {
-            res.status(inputs.status).json(inputs.message)
+            return res.status(inputs.statusCode).json(inputs.message)
         }
-
         if (!(await updateClient(inputs.clienteObj, id_cliente))) {
-            return res
-                .status(400)
-                .json('Perfil do cliente não foi atualizado.')
+            return res.status(400).json('Perfil do cliente não foi atualizado.')
         }
 
         return res.status(200).json('Perfil do cliente atualizado com sucesso.')

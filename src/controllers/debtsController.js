@@ -1,24 +1,11 @@
 const knex = require('../config/databaseConnection')
 const { findClientByName, findClientById } = require('../services/clientsService')
-const { insertDebt, updateDebt, handleDebtUpdateInputs } = require('../services/debtsService')
+const { insertDebt, updateDebt, handleDebtUpdateInputs, listDebts } = require('../services/debtsService')
 
 const listarCobrancas = async (req, res) => {
     try {
-        const cobrancas = await knex
-            .select([
-                'id_cliente',
-                'nome_',
-                'descricao',
-                'valor',
-                knex.raw(`( 
-                    CASE 
-                    WHEN esta_pago IS TRUE THEN 'PAGO'
-                    WHEN esta_pago IS FALSE AND data_vencimento< NOW() THEN 'PENDENTE'  
-                    ELSE 'VENCIDO'
-                    END
-                    ) as status`),
-            ])
-            .from('cobrancas')
+
+        const cobrancas = await listDebts()
 
         return res.status(200).json(cobrancas)
     } catch (error) {
@@ -50,7 +37,7 @@ const editarCobranca = async (req, res) => {
         const inputs = await handleDebtUpdateInputs(req)
 
         if (!inputs.success) {
-            res.status(inputs.status).json(inputs.message)
+           return res.status(inputs.statusCode).json(inputs.message)
         }
         if (!(await updateDebt(inputs.cobrancaObj, id_cobranca))) {
             return res.status(400).json('Cobranca não atualizada')
