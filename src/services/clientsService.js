@@ -125,7 +125,7 @@ const handleClientRegisterInputs = async (req) => {
         id_usuario,
         email_cliente,
         nome_cliente,
-        dadosCliente,
+        ...dadosCliente,
     }  
 
     return {
