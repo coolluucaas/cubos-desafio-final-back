@@ -106,10 +106,53 @@ const updateDebt = async (cobrancaObj) => {
         .where('id_cobranca', cobrancaObj.id_cobranca)
 }
 
+const handleDebtDeleteInput = async (req) => {
+    const { id_cobranca } = req.params
+
+    const cobranca = await findDebtById(id_cobranca)
+
+    if (!cobranca) {
+        return {
+            success: false,
+            statusCode: 400,
+            message:
+                'Não há cobrança cadastrado com o id informado. Por favor, insira um id válido.',
+        }
+    } else {
+        if (cobranca.status !== 'PENDENTE') {
+            return {
+                success: false,
+                statusCode: 400,
+                message: `Só é possível excluir cobranças com status 'PENDENTE'.`,
+            }
+        }
+
+        if (cobranca.data_vencimento.getTime() < Date.now()) {
+            return {
+                success: false,
+                statusCode: 400,
+                message: `Só é possível excluir cobranças cuja data de vencimento for igual ou posterior a data atual.`,
+            }
+        }
+    }
+
+    return {
+        success: true,
+        id_cobranca,
+    }
+}
+
+const deleteDebt = (id_cobranca) => {
+    return knex('cobrancas').where('id_cobranca', id_cobranca).del()
+}
+
 module.exports = {
     listDebts,
     listDebtsAsComponentOfClientDetail,
     insertDebt,
     handleDebtUpdateInputs,
+    handleDebtDeleteInput,
     updateDebt,
+    findDebtById,
+    deleteDebt,
 }

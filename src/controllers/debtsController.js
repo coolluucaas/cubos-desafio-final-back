@@ -7,6 +7,9 @@ const {
     updateDebt,
     handleDebtUpdateInputs,
     listDebts,
+    findDebtById,
+    handleDebtDeleteInput,
+    deleteDebt,
 } = require('../services/debtsService')
 
 const listarCobrancas = async (req, res) => {
@@ -49,14 +52,27 @@ const editarCobranca = async (req, res) => {
             return res.status(400).json('Cobrança não atualizada.')
         }
 
-        return res.status(200).json('Cobranca atualizada com sucesso.')
+        return res.status(200).json('Cobrança atualizada com sucesso.')
     } catch (error) {
         return res.status(400).json(error.message)
     }
 }
 
 const excluirCobranca = async (req, res) => {
-    const { id_cobranca } = req.params
+    try {
+        const input = await handleDebtDeleteInput(req)
+        if (!input.success) {
+            return res.status(input.statusCode).json(input.message)
+        }
+
+        if (!(await deleteDebt(input.id_cobranca))) {
+            return res.status(400).json('Cobrança não excluída.')
+        }
+
+        return res.status(200).json('Cobrança excluída com sucesso.')
+    } catch (error) {
+        return res.status(400).json(error.message)
+    }
 }
 
 module.exports = {
