@@ -159,7 +159,7 @@ const listClients = async () => {
             CASE 
             WHEN d.status = 'PAGO' THEN 1
             WHEN d.status = 'PENDENTE' AND d.data_vencimento >= CURRENT_DATE THEN 1            
-            ELSE 0
+            WHEN d.status = 'PENDENTE' AND d.data_vencimento < CURRENT_DATE THEN 0            
             END
             )as status_cobranca`),
                 ])
@@ -184,7 +184,7 @@ const listClients = async () => {
     (
       CASE MIN(status_cobranca)
       WHEN 0 THEN 'INADIMPLENTE'
-      WHEN 1 THEN 'EM DIA'
+      WHEN 1 THEN 'EM DIA'            
       END
     ) as status_cliente`),
         ])

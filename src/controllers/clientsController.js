@@ -21,6 +21,9 @@ const listarClientes = async (req, res) => {
                 if (cliente.id_cliente === cobranca.id_cliente) {
                     cliente.cobrancas.push(dadosCobranca)
                 }
+            }            
+            if(cliente.cobrancas.length===0){
+                cliente.status_cliente = 'EM DIA'
             }
         }
 
