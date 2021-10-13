@@ -1,5 +1,9 @@
 const knex = require('../config/databaseConnection')
 
+const findDebtById = (id_cobranca) => {
+    return knex('cobrancas').where('id_cobranca', id_cobranca).first()
+}
+
 const listDebtsAsComponentOfClientDetail = async () => {
     return knex
         .select([
@@ -29,7 +33,7 @@ const listDebts = async () => {
             'descricao',
             'data_vencimento',
             'valor',
-            'status',            
+            'status',
             knex.raw(`( 
         CASE 
         WHEN status = 'PAGO' THEN 'PAGO'
@@ -53,7 +57,10 @@ const insertDebt = async (id_cliente, nome_cliente, dadosCliente) => {
 
 const handleDebtUpdateInputs = async (req) => {
     const { nome_cliente, descricao, data_vencimento, valor, status } = req.body
+    const { id_cobranca } = req.params
+
     const cobrancaObj = {}
+
     if (!nome_cliente && !descricao && !data_vencimento && !valor && !status) {
         return {
             success: false,
@@ -61,6 +68,17 @@ const handleDebtUpdateInputs = async (req) => {
             message:
                 'É obrigatório informar ao menos um campo para atualização',
         }
+    }
+    if (id_cobranca) {
+        if (!(await findDebtById(id_cobranca))) {
+            return {
+                success: false,
+                statusCode: 400,
+                message:
+                    'Não há cobrança cadastrado com o id informado. Por favor, insira um id válido.',
+            }
+        }
+        cobrancaObj.id_cobranca = id_cobranca
     }
 
     if (nome_cliente) {
@@ -82,10 +100,10 @@ const handleDebtUpdateInputs = async (req) => {
     }
 }
 
-const updateDebt = async (cobrancaObj, id_cobranca) => {
+const updateDebt = async (cobrancaObj) => {
     return knex('cobrancas')
         .update(cobrancaObj)
-        .where('id_cobranca', id_cobranca)
+        .where('id_cobranca', cobrancaObj.id_cobranca)
 }
 
 module.exports = {

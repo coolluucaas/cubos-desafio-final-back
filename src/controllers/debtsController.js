@@ -1,4 +1,3 @@
-const knex = require('../config/databaseConnection')
 const {
     findClientByName,
     findClientById,
@@ -30,25 +29,24 @@ const cadastrarCobranca = async (req, res) => {
             return res.status(400).json('Cliente não cadastrado.')
         }
         if (!(await insertDebt(id_cliente, nome_cliente, dadosCliente))) {
-            return res.status(400).json('Cobranca não cadastrada.')
+            return res.status(400).json('Cobrança não cadastrada.')
         }
 
-        return res.status(200).json('Cobranca cadastrada com sucesso.')
+        return res.status(200).json('Cobrança cadastrada com sucesso.')
     } catch (error) {
         return res.status(400).json(error.message)
     }
 }
 
 const editarCobranca = async (req, res) => {
-    const { id_cobranca } = req.params
     try {
         const inputs = await handleDebtUpdateInputs(req)
 
         if (!inputs.success) {
             return res.status(inputs.statusCode).json(inputs.message)
         }
-        if (!(await updateDebt(inputs.cobrancaObj, id_cobranca))) {
-            return res.status(400).json('Cobranca não atualizada')
+        if (!(await updateDebt(inputs.cobrancaObj))) {
+            return res.status(400).json('Cobrança não atualizada.')
         }
 
         return res.status(200).json('Cobranca atualizada com sucesso.')
