@@ -1,4 +1,5 @@
 const knex = require('../config/databaseConnection')
+const { findClientByName } = require('./clientsService')
 
 const findDebtById = (id_cobranca) => {
     return knex('cobrancas').where('id_cobranca', id_cobranca).first()
@@ -82,6 +83,16 @@ const handleDebtUpdateInputs = async (req) => {
     }
 
     if (nome_cliente) {
+        const { nome_cliente: nome_cadastrado } = await findDebtById(
+            id_cobranca
+        )
+
+        if (nome_cliente !== nome_cadastrado) {
+            const { id_cliente: id_novoCliente } = await findClientByName(
+                nome_cliente
+            )
+            cobrancaObj.id_cliente = id_novoCliente
+        }
         cobrancaObj.nome_cliente = nome_cliente
     }
     if (descricao) {
