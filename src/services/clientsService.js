@@ -3,13 +3,14 @@ const knex = require('../config/databaseConnection')
 const findClientByEmail = async (email_cliente) => {
     return knex('clientes').where('email_cliente', email_cliente).first()
 }
-
 const findClientByName = async (nome_cliente) => {
     return knex('clientes').where('nome_cliente', nome_cliente).first()
 }
-
 const findClientById = async (id_cliente) => {
     return knex('clientes').where('id_cliente', id_cliente).first()
+}
+const findClientByCpf = async (cpf_cliente) => {
+    return knex('clientes').where('cpf_cliente', cpf_cliente).first()
 }
 const handleClientUpdateInputs = async (req) => {
     const {
@@ -56,7 +57,6 @@ const handleClientUpdateInputs = async (req) => {
         }
         clienteObj.id_cliente = id_cliente
     }
-
     if (nome_cliente) {
         clienteObj.nome_cliente = nome_cliente
     }
@@ -77,7 +77,19 @@ const handleClientUpdateInputs = async (req) => {
         }
     }
     if (cpf_cliente) {
-        clienteObj.cpf_cliente = cpf_cliente
+        const { cpf_cliente: cpf_cadastrado } = await findClientById(id_cliente)
+
+        if (cpf_cliente !== cpf_cadastrado) {
+            if (await findClientByCpf(cpf_cliente)) {
+                return {
+                    success: false,
+                    statusCode: 400,
+                    message:
+                        'O Cpf informado já está cadastrado e pertence a outro usuário. Por favor, tente novamente.',
+                }
+            }
+            clienteObj.cpf_cliente = cpf_cliente
+        }
     }
     if (telefone_cliente) {
         clienteObj.telefone_cliente = telefone_cliente
@@ -108,7 +120,7 @@ const handleClientUpdateInputs = async (req) => {
 }
 
 const handleClientRegisterInputs = async (req) => {
-    const { email_cliente, nome_cliente, ...dadosCliente } = req.body
+    const { email_cliente, nome_cliente, cpf_cliente, ...dadosCliente } = req.body
     const { id_usuario } = req.usuario
     let clienteObj = {}
 
@@ -126,12 +138,20 @@ const handleClientRegisterInputs = async (req) => {
             message: 'Nome de cliente indisponível. Por favor, insira outro.',
         }
     }
+    if (await findClientByCpf(cpf_cliente)) {
+        return {
+            success: false,
+            statusCode: 400,
+            message: 'Cpf indisponível. Por favor, insira outro.',
+        }
+    }    
 
     clienteObj = {
         id_usuario,
         email_cliente,
         nome_cliente,
-        ...dadosCliente,
+        cpf_cliente,
+        dadosCliente
     }
 
     return {
