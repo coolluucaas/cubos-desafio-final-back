@@ -240,8 +240,9 @@ const counterClientsStatus = async () => {
                             knex.raw(`( 
                                 CASE 
                                 WHEN cobrancas.status = 'PAGO' THEN 1
+                                WHEN cobrancas.status IS NULL THEN 1            
                                 WHEN cobrancas.status = 'PENDENTE' AND cobrancas.data_vencimento >= CURRENT_DATE THEN 1            
-                                WHEN cobrancas.status = 'PENDENTE' AND cobrancas.data_vencimento < CURRENT_DATE THEN 0            
+                                WHEN cobrancas.status = 'PENDENTE' AND cobrancas.data_vencimento < CURRENT_DATE THEN 0 
                                 END
                                 )as status_cobranca`),
                         ])
@@ -254,6 +255,7 @@ const counterClientsStatus = async () => {
                         CASE MIN(status_cobranca)
                         WHEN 0 THEN 'INADIMPLENTE'
                         WHEN 1 THEN 'EM DIA'
+                        
                         END
                       ) as status`),
                 ])
