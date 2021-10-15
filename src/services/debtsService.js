@@ -104,6 +104,9 @@ const handleDebtUpdateInputs = async (req) => {
     if (valor) {
         cobrancaObj.valor = valor
     }
+    if (status) {
+        cobrancaObj.status = status
+    }
 
     return {
         success: true,
