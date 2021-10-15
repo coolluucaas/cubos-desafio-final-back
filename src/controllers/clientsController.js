@@ -4,9 +4,11 @@ const {
     updateClient,
     handleClientUpdateInputs,
     handleClientRegisterInputs,
+    counterClientsStatus,
 } = require('../services/clientsService')
-const { listDebts, listDebtsAsComponentOfClientDetail } = require('../services/debtsService')
-
+const {
+    listDebtsAsComponentOfClientDetail,
+} = require('../services/debtsService')
 
 const listarClientes = async (req, res) => {
     try {
@@ -21,13 +23,23 @@ const listarClientes = async (req, res) => {
                 if (cliente.id_cliente === cobranca.id_cliente) {
                     cliente.cobrancas.push(dadosCobranca)
                 }
-            }            
-            if(cliente.cobrancas.length===0){
+            }
+            if (cliente.cobrancas.length === 0) {
                 cliente.status_cliente = 'EM DIA'
             }
         }
 
         return res.status(200).json(clientes)
+    } catch (error) {
+        return res.status(400).json(error.message)
+    }
+}
+
+const contadorDeStatusDosClientes = async (req, res) => {
+    try {
+        const contagem = await counterClientsStatus()
+
+        return res.status(200).json(contagem)
     } catch (error) {
         return res.status(400).json(error.message)
     }
@@ -50,7 +62,6 @@ const cadastrarClientes = async (req, res) => {
     }
 }
 
-
 const editarPerfilCliente = async (req, res) => {
     try {
         const inputs = await handleClientUpdateInputs(req)
@@ -72,4 +83,5 @@ module.exports = {
     cadastrarClientes,
     listarClientes,
     editarPerfilCliente,
+    contadorDeStatusDosClientes,
 }

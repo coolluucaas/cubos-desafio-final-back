@@ -3,6 +3,7 @@ const {
     cadastrarClientes,
     listarClientes,
     editarPerfilCliente,
+    contadorDeStatusDosClientes,
 } = require('../controllers/clientsController')
 const validation = require('../middlewares/validationMiddleware')
 const schemaCadastrarCliente = require('../validations/cadastrarClienteValidation')
@@ -21,5 +22,6 @@ routesClientes.put(
     validation(schemaEditarPerfilCliente),
     editarPerfilCliente
 )
+routesClientes.get('/clientes/contador', contadorDeStatusDosClientes)
 
 module.exports = routesClientes
