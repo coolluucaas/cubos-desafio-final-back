@@ -157,6 +157,28 @@ const deleteDebt = (id_cobranca) => {
     return knex('cobrancas').where('id_cobranca', id_cobranca).del()
 }
 
+const counterDebtsStatus = () => {
+    return knex
+        .with(
+            'tabela_primaria',
+            knex
+                .select([
+                    knex.raw(`(
+                CASE 
+                WHEN status = 'PAGO' THEN 'PAGO'
+                WHEN status = 'PENDENTE' AND data_vencimento < CURRENT_DATE THEN 'VENCIDO' 
+                WHEN status = 'PENDENTE' AND data_vencimento >= CURRENT_DATE THEN 'PENDENTE'             
+                END
+                ) as status_cobranca`),
+                ])
+                .from('cobrancas')
+        )
+        .select('status_cobranca')
+        .count('status_cobranca')
+        .from('tabela_primaria')
+        .groupBy('status_cobranca')
+}
+
 module.exports = {
     listDebts,
     listDebtsAsComponentOfClientDetail,
@@ -166,4 +188,5 @@ module.exports = {
     updateDebt,
     findDebtById,
     deleteDebt,
+    counterDebtsStatus,
 }
