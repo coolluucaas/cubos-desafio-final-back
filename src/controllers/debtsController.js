@@ -7,9 +7,9 @@ const {
     updateDebt,
     handleDebtUpdateInputs,
     listDebts,
-    findDebtById,
     handleDebtDeleteInput,
     deleteDebt,
+    counterDebtsStatus,
 } = require('../services/debtsService')
 
 const listarCobrancas = async (req, res) => {
@@ -75,9 +75,20 @@ const excluirCobranca = async (req, res) => {
     }
 }
 
+const contadorDeStatusDasCobrancas = async ( req, res) => {
+    try {
+        const contagem = await counterDebtsStatus()
+
+        return res.status(200).json(contagem)
+    } catch (error) {       
+        return res.status(400).json(error.message)
+    }
+}
+
 module.exports = {
     listarCobrancas,
     cadastrarCobranca,
     editarCobranca,
     excluirCobranca,
+    contadorDeStatusDasCobrancas,
 }
