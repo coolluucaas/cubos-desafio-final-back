@@ -120,7 +120,8 @@ const handleClientUpdateInputs = async (req) => {
 }
 
 const handleClientRegisterInputs = async (req) => {
-    const { email_cliente, nome_cliente, cpf_cliente, ...dadosCliente } = req.body
+    const { email_cliente, nome_cliente, cpf_cliente, ...dadosCliente } =
+        req.body
     const { id_usuario } = req.usuario
     let clienteObj = {}
 
@@ -144,14 +145,14 @@ const handleClientRegisterInputs = async (req) => {
             statusCode: 400,
             message: 'Cpf indisponível. Por favor, insira outro.',
         }
-    }    
+    }
 
     clienteObj = {
         id_usuario,
         email_cliente,
         nome_cliente,
         cpf_cliente,
-        ...dadosCliente
+        ...dadosCliente,
     }
 
     return {
@@ -225,6 +226,48 @@ const listClients = async () => {
         .orderBy('id_cliente')
 }
 
+const counterClientsStatus = async () => {
+    return knex
+        .with(
+            'tabela_secundaria',
+            knex
+                .with(
+                    'tabela_primaria',
+                    knex
+                        .select([
+                            'clientes.*',
+                            'cobrancas.status',
+                            knex.raw(`( 
+                                CASE 
+                                WHEN cobrancas.status = 'PAGO' THEN 1
+                                WHEN cobrancas.status = 'PENDENTE' AND cobrancas.data_vencimento >= CURRENT_DATE THEN 1            
+                                WHEN cobrancas.status = 'PENDENTE' AND cobrancas.data_vencimento < CURRENT_DATE THEN 0            
+                                END
+                                )as status_cobranca`),
+                        ])
+                        .from('clientes')                        
+                        .leftJoin('cobrancas', 'clientes.id_cliente', '=', 'cobrancas.id_cliente')
+                )
+                .select([
+                    'id_cliente',
+                    knex.raw(`(
+                        CASE MIN(status_cobranca)
+                        WHEN 0 THEN 'INADIMPLENTE'
+                        WHEN 1 THEN 'EM DIA'
+                        END
+                      ) as status`),
+                ])
+
+                .from('tabela_primaria')
+                .groupBy('id_cliente')
+        )
+        .select('status')
+        .count('status')
+        .from('tabela_secundaria')
+        .groupBy('status')
+        
+}
+
 const insertClient = async (clienteObj) => {
     return knex('clientes').insert(clienteObj)
 }
@@ -244,4 +287,5 @@ module.exports = {
     listClients,
     insertClient,
     updateClient,
+    counterClientsStatus,
 }
