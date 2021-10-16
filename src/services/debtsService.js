@@ -133,6 +133,9 @@ const handleDebtDeleteInput = async (req) => {
                 'Não há cobrança cadastrado com o id informado. Por favor, insira um id válido.',
         }
     } else {
+        const hoje = new Date()
+        const ontem = hoje.setDate(hoje.getDate() - 1)
+
         if (cobranca.status !== 'PENDENTE') {
             return {
                 success: false,
@@ -141,7 +144,7 @@ const handleDebtDeleteInput = async (req) => {
             }
         }
 
-        if (cobranca.data_vencimento.getTime() < Date.now()) {
+        if (cobranca.data_vencimento.getTime() < ontem) {
             return {
                 success: false,
                 statusCode: 400,
